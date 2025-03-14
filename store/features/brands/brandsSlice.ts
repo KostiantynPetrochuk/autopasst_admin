@@ -14,9 +14,9 @@ export const brandsSlice = createSlice({
     },
     addModelToBrand: (state, action) => {
       const { brandId, model } = action.payload;
-      const brand = state.find((b) => b.ID == brandId);
+      const brand = state.find((b) => b.id == brandId);
       if (brand) {
-        brand.Models.push(model);
+        brand.models.push(model);
       }
     },
   },

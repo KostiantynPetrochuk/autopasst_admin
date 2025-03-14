@@ -88,8 +88,8 @@ const BrandPage = ({ params }: { params: { id: string } }) => {
         addModelToBrand({
           brandId: params.id,
           model: {
-            ID: data.model.ID,
-            ModelName: data.model.ModelName,
+            id: data.model.id,
+            modelName: data.model.modelName,
           },
         })
       );
