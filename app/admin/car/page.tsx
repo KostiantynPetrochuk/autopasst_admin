@@ -191,30 +191,32 @@ const CarPage = () => {
                         }}
                       >
                         <Typography variant="body1">
-                          <strong>Бренд:</strong> {car.brandName}
+                          <strong>Бренд:&nbsp;</strong>
+                          {car.brandName}
                         </Typography>
                         <Typography variant="body1">
-                          <strong>Модель:</strong> {car.modelName}
+                          <strong>Модель:&nbsp;</strong>
+                          {car.modelName}
                         </Typography>
                         <Typography variant="body1">
-                          <strong>Стан:</strong>
+                          <strong>Стан:&nbsp;</strong>
                           {
                             CONDITION[car.condition as keyof typeof CONDITION]
                               .label.ua
                           }
                         </Typography>
                         <Typography variant="body1">
-                          <strong>Пробіг:</strong> {car.mileage} км
+                          <strong>Пробіг:&nbsp;</strong> {car.mileage} км
                         </Typography>
                         <Typography variant="body1">
-                          <strong>Паливо:</strong>
+                          <strong>Паливо:&nbsp;</strong>
                           {
                             FUEL_TYPES[car.fuelType as keyof typeof FUEL_TYPES]
                               .label
                           }
                         </Typography>
                         <Typography variant="body1">
-                          <strong>Дата створення:</strong>
+                          <strong>Дата створення:&nbsp;</strong>
                           {new Intl.DateTimeFormat("uk-UA", {
                             day: "2-digit",
                             month: "short",

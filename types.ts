@@ -13,20 +13,21 @@ export type Brand = {
 
 export type Car = {
   id: number;
-  bodyType: string;
-  brandId: number;
-  color: string;
-  condition: string;
-  price: number;
-  doorCount: number;
-  driveType: string;
-  engineSize: string;
-  fuelType: string;
-  imageNames: string[];
-  mileage: number;
-  transmission: string;
   vin: string;
-  year: number;
+  brandId: number;
+  modelId: number;
+  info: string;
+  condition: string;
+  bodyType: string;
+  firstRegistration: string;
+  mileage: number;
+  fuelType: string;
+  transmission: string;
+  maintenance: string;
+  ecoClass: string;
+  keys: string;
+  price: number;
+  imageNames: string[];
   modelName: string;
   brandName: string;
   status: string;

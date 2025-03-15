@@ -1,71 +1,52 @@
 import { Car } from "@/types";
 
 type OverviewDataItem = {
-  src: string;
   label: string;
   value: keyof Car;
   translate?: boolean;
 };
 
 export const overviewData: OverviewDataItem[] = [
+  { label: "VIN:", value: "vin" },
   {
-    src: "/img/overview_body.svg",
-    label: "Тип кузову:",
-    value: "BodyType",
-    translate: true,
-  },
-  { src: "/img/overview_mileage.svg", label: "Пробіг:", value: "Mileage" },
-  {
-    src: "/img/overview_fuel.svg",
-    label: "Тип пального:",
-    value: "FuelType",
-    translate: true,
-  },
-  { src: "/img/overview_year.svg", label: "Рік:", value: "Year" },
-  {
-    src: "/img/overview_transmission.svg",
-    label: "Коробка передач:",
-    value: "Transmission",
-    translate: true,
-  },
-  {
-    src: "/img/overview_drive_type.svg",
-    label: "Привід:",
-    value: "DriveType",
-    translate: true,
-  },
-  {
-    src: "/img/overview_condition.svg",
     label: "Стан:",
-    value: "Condition",
+    value: "condition",
     translate: true,
   },
   {
-    src: "/img/overview_engine.svg",
-    label: "Об'єм двигуна:",
-    value: "EngineSize",
+    label: "Тип кузову:",
+    value: "bodyType",
+    translate: true,
   },
   {
-    src: "/img/overview_door.svg",
-    label: "Кількість дверей:",
-    value: "DoorCount",
+    label: "Перша реєстр:",
+    value: "firstRegistration",
+  },
+  { label: "Пробіг:", value: "mileage" },
+  {
+    label: "Тип пального:",
+    value: "fuelType",
+    translate: true,
   },
   {
-    src: "/img/euro.svg",
+    label: "Коробка передач:",
+    value: "transmission",
+    translate: true,
+  },
+  {
+    label: "Техогляд до:",
+    value: "maintenance",
+  },
+  {
+    label: "Еко клас:",
+    value: "ecoClass",
+  },
+  {
+    label: "Ключі:",
+    value: "keys",
+  },
+  {
     label: "Ціна:",
-    value: "Price",
+    value: "price",
   },
-  {
-    src: "/img/overview_color.svg",
-    label: "Колір:",
-    value: "Color",
-    translate: true,
-  },
-  { src: "/img/overview_vin.svg", label: "VIN:", value: "VIN" },
 ];
-
-export type ComfortTitlesKeys =
-  | "interior"
-  | "exterior"
-  | "safety"
-  | "comfort_convenience";

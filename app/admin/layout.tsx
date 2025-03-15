@@ -5,6 +5,9 @@ import Providers from "@/components/Providers";
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v13-appRouter";
 import { ThemeProvider } from "@mui/material/styles";
 import { Provider } from "react-redux";
+import ukLocale from "date-fns/locale/uk";
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 
 import theme from "../../theme";
 
@@ -26,13 +29,18 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <AppRouterCacheProvider>
-          <ThemeProvider theme={theme}>
-            <Providers>
-              <Provider store={store}>{children}</Provider>
-            </Providers>
-          </ThemeProvider>
-        </AppRouterCacheProvider>
+        <LocalizationProvider
+          dateAdapter={AdapterDateFns}
+          adapterLocale={ukLocale}
+        >
+          <AppRouterCacheProvider>
+            <ThemeProvider theme={theme}>
+              <Providers>
+                <Provider store={store}>{children}</Provider>
+              </Providers>
+            </ThemeProvider>
+          </AppRouterCacheProvider>
+        </LocalizationProvider>
       </body>
     </html>
   );

@@ -9,7 +9,7 @@ export const brandsSlice = createSlice({
   name: "brands",
   initialState,
   reducers: {
-    setBrands: (state, action: PayloadAction<any>) => {
+    setBrands: (state, action: PayloadAction<Brand[]>) => {
       return action.payload;
     },
     addModelToBrand: (state, action) => {

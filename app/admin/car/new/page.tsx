@@ -10,12 +10,7 @@ import Grid from "@mui/material/Grid";
 import IconButton from "@mui/material/IconButton";
 import PhotoCamera from "@mui/icons-material/PhotoCamera";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
-import {
-  Checkbox,
-  FormControlLabel,
-  FormGroup,
-  TextField,
-} from "@mui/material";
+import { TextField } from "@mui/material";
 import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
 import SaveIcon from "@mui/icons-material/Save";
@@ -24,6 +19,14 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import {
+  parseISO,
+  setHours,
+  setMinutes,
+  setSeconds,
+  setMilliseconds,
+} from "date-fns";
 import { useFetchWithAuth } from "@/hooks";
 
 import { AdminHeader, Loading, Message } from "@/components";
@@ -33,15 +36,13 @@ import { selectBrands, setBrands } from "@/store/features/brands/brandsSlice";
 import {
   BODY_TYPES,
   CONDITION,
-  DRIVE_TYPE,
+  ECO_CLASS,
   FUEL_TYPES,
+  KEYS,
   TRANSMISSION,
-  LABELS,
 } from "@/constants";
 
 import { useSession } from "next-auth/react";
-
-const CAR_COLORS = LABELS.Color;
 
 const NewCarPage = () => {
   const session = useSession();
@@ -65,33 +66,33 @@ const NewCarPage = () => {
     vin: "",
     brandId: brands[0]?.id ?? "",
     modelId: "",
+    info: "",
+    condition: "",
     body: "",
+    firstRegistration: "",
     mileage: 0,
-    year: 0,
     fuel_type: "",
     transmission: "",
-    drive_type: "",
-    condition: "",
-    engine_size: 0,
-    door_count: 0,
+    maintenance: "", // техобслуговування до
+    ecoClass: "",
+    keys: "1",
     price: 0,
-    color: "",
   });
   const [errors, setErrors] = useState({
     vin: false,
     brandId: false,
     modelId: false,
+    info: false,
+    condition: false,
     body: false,
+    firstRegistration: false,
     mileage: false,
-    year: false,
     fuel_type: false,
     transmission: false,
-    drive_type: false,
-    condition: false,
-    engine_size: false,
-    door_count: false,
+    maintenance: false,
+    ecoClass: false,
+    keys: false,
     price: false,
-    color: false,
   });
 
   const handleChange = (
@@ -129,33 +130,18 @@ const NewCarPage = () => {
       vin,
       brandId,
       modelId,
-      body,
-      fuel_type,
-      year,
-      transmission,
-      drive_type,
+      info,
       condition,
-      engine_size,
-      door_count,
-      price,
-      color,
+      body,
+      firstRegistration,
       mileage,
+      fuel_type,
+      transmission,
+      maintenance,
+      ecoClass,
+      keys,
+      price,
     } = form;
-
-    if (vin.length !== 17) {
-      setErrors((prev) => ({
-        ...prev,
-        vin: true,
-      }));
-      setLoading(false);
-      setMessage((prev) => ({
-        ...prev,
-        open: true,
-        severity: "warning",
-        text: "VIN повинен містити 17 символів!",
-      }));
-      return;
-    }
 
     if (!brandId) {
       setErrors((prev) => ({
@@ -232,21 +218,6 @@ const NewCarPage = () => {
       return;
     }
 
-    if (year < 1900 || year > new Date().getFullYear()) {
-      setErrors((prev) => ({
-        ...prev,
-        year: true,
-      }));
-      setLoading(false);
-      setMessage((prev) => ({
-        ...prev,
-        open: true,
-        severity: "warning",
-        text: "Рік випуску автомобіля не коректний!",
-      }));
-      return;
-    }
-
     if (!transmission) {
       setErrors((prev) => ({
         ...prev,
@@ -258,21 +229,6 @@ const NewCarPage = () => {
         open: true,
         severity: "warning",
         text: "Будь ласка, оберіть тип коробки передач автомобіля!",
-      }));
-      return;
-    }
-
-    if (!drive_type) {
-      setErrors((prev) => ({
-        ...prev,
-        drive_type: true,
-      }));
-      setLoading(false);
-      setMessage((prev) => ({
-        ...prev,
-        open: true,
-        severity: "warning",
-        text: "Будь ласка, оберіть тип приводу автомобіля!",
       }));
       return;
     }
@@ -292,36 +248,6 @@ const NewCarPage = () => {
       return;
     }
 
-    if (engine_size <= 0) {
-      setErrors((prev) => ({
-        ...prev,
-        engine_size: true,
-      }));
-      setLoading(false);
-      setMessage((prev) => ({
-        ...prev,
-        open: true,
-        severity: "warning",
-        text: "Об'єм двигуна не може бути від'ємним!",
-      }));
-      return;
-    }
-
-    if (door_count <= 0) {
-      setErrors((prev) => ({
-        ...prev,
-        door_count: true,
-      }));
-      setLoading(false);
-      setMessage((prev) => ({
-        ...prev,
-        open: true,
-        severity: "warning",
-        text: "Кількість дверей не може бути від'ємною!",
-      }));
-      return;
-    }
-
     if (price <= 0) {
       setErrors((prev) => ({
         ...prev,
@@ -337,36 +263,20 @@ const NewCarPage = () => {
       return;
     }
 
-    if (!color) {
-      setErrors((prev) => ({
-        ...prev,
-        color: true,
-      }));
-      setLoading(false);
-      setMessage((prev) => ({
-        ...prev,
-        open: true,
-        severity: "warning",
-        text: "Будь ласка, оберіть колір автомобіля!",
-      }));
-      return;
-    }
-
     if (
-      !vin ||
       !brandId ||
       !modelId ||
-      !body ||
-      !fuel_type ||
-      !year ||
-      !transmission ||
-      !drive_type ||
+      !info ||
       !condition ||
-      !engine_size ||
-      !door_count ||
-      !price ||
-      !color ||
-      !mileage
+      !body ||
+      !firstRegistration ||
+      !mileage ||
+      !fuel_type ||
+      !transmission ||
+      !maintenance ||
+      !ecoClass ||
+      !keys ||
+      !price
     ) {
       setLoading(false);
       setMessage((prev) => ({
@@ -411,17 +321,17 @@ const NewCarPage = () => {
         vin: "",
         brandId: brands[0]?.id ?? "",
         modelId: "",
+        info: "",
+        condition: "",
         body: "",
+        firstRegistration: "",
         mileage: 0,
-        year: 0,
         fuel_type: "",
         transmission: "",
-        drive_type: "",
-        condition: "",
-        engine_size: 0,
-        door_count: 0,
+        maintenance: "", // техобслуговування до
+        ecoClass: "",
+        keys: "1",
         price: 0,
-        color: "",
       });
       setImages(Array(3).fill(null));
       router.push("/admin/car");
@@ -551,8 +461,45 @@ const NewCarPage = () => {
                     >
                       {modelsItems?.map((model: any) => {
                         return (
-                          <MenuItem key={model.ID} value={model.ID}>
-                            {model.ModelName}
+                          <MenuItem key={model.id} value={model.id}>
+                            {model.modelName}
+                          </MenuItem>
+                        );
+                      })}
+                    </Select>
+                  </FormControl>
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <TextField
+                    fullWidth
+                    label="Інфо"
+                    type="text"
+                    value={form.info}
+                    onChange={handleChange}
+                    name="info"
+                    error={errors.info}
+                    helperText={errors.info ? "не коректні дані" : ""}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <FormControl fullWidth>
+                    <InputLabel id="demo-simple-select-label">Стан</InputLabel>
+                    <Select
+                      labelId="demo-simple-select-label"
+                      id="demo-simple-select"
+                      label="Стан"
+                      value={form.condition}
+                      onChange={handleChange}
+                      name="condition"
+                      error={errors.condition}
+                    >
+                      {Object.keys(CONDITION).map((value) => {
+                        return (
+                          <MenuItem key={value} value={value}>
+                            {
+                              CONDITION[value as keyof typeof CONDITION].label
+                                .ua
+                            }
                           </MenuItem>
                         );
                       })}
@@ -573,10 +520,10 @@ const NewCarPage = () => {
                       name="body"
                       error={errors.body}
                     >
-                      {Object.keys(BODY_TYPES).map((model: any, index) => {
+                      {Object.keys(BODY_TYPES).map((value) => {
                         return (
-                          <MenuItem key={index} value={model}>
-                            {model}
+                          <MenuItem key={value} value={value}>
+                            {BODY_TYPES[value as keyof typeof BODY_TYPES].label}
                           </MenuItem>
                         );
                       })}
@@ -584,10 +531,53 @@ const NewCarPage = () => {
                   </FormControl>
                 </Grid>
                 <Grid item xs={12} sm={6}>
+                  <DatePicker
+                    sx={{ width: "100%" }}
+                    label="Перша реєстрація"
+                    name="firstRegistration"
+                    value={
+                      form.firstRegistration
+                        ? parseISO(form.firstRegistration)
+                        : null
+                    }
+                    onChange={(date) => {
+                      if (!date || isNaN(date.getTime())) {
+                        setErrors((prev) => ({
+                          ...prev,
+                          firstRegistration: true,
+                        }));
+                        return;
+                      }
+                      const updatedDate = setMilliseconds(
+                        setSeconds(setMinutes(setHours(date, 12), 0), 0),
+                        0
+                      );
+                      setErrors((prev) => ({
+                        ...prev,
+                        firstRegistration: false,
+                      }));
+                      if (updatedDate && !isNaN(updatedDate.getTime())) {
+                        setForm((prev) => ({
+                          ...prev,
+                          firstRegistration: updatedDate.toISOString(),
+                        }));
+                      }
+                    }}
+                    onError={(error) => {
+                      if (error) {
+                        setErrors((prev) => ({
+                          ...prev,
+                          firstRegistration: true,
+                        }));
+                      }
+                    }}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={6}>
                   <TextField
                     fullWidth
                     label="Пробіг"
-                    type="number"
+                    type="text"
                     value={form.mileage}
                     onChange={handleChange}
                     name="mileage"
@@ -620,18 +610,6 @@ const NewCarPage = () => {
                   </FormControl>
                 </Grid>
                 <Grid item xs={12} sm={6}>
-                  <TextField
-                    fullWidth
-                    label="Рік"
-                    type="number"
-                    value={form.year}
-                    onChange={handleChange}
-                    name="year"
-                    error={errors.year}
-                    helperText={errors.year ? "не коректні дані" : ""}
-                  />
-                </Grid>
-                <Grid item xs={12} sm={6}>
                   <FormControl fullWidth>
                     <InputLabel id="demo-simple-select-label">
                       Коробка передач
@@ -659,23 +637,62 @@ const NewCarPage = () => {
                   </FormControl>
                 </Grid>
                 <Grid item xs={12} sm={6}>
+                  <DatePicker
+                    sx={{ width: "100%" }}
+                    label="Техобслуговування до"
+                    name="maintenance"
+                    value={form.maintenance ? parseISO(form.maintenance) : null}
+                    onChange={(date) => {
+                      if (!date || isNaN(date.getTime())) {
+                        setErrors((prev) => ({
+                          ...prev,
+                          maintenance: true,
+                        }));
+                        return;
+                      }
+                      const updatedDate = setMilliseconds(
+                        setSeconds(setMinutes(setHours(date, 12), 0), 0),
+                        0
+                      );
+                      setErrors((prev) => ({
+                        ...prev,
+                        maintenance: false,
+                      }));
+                      if (updatedDate && !isNaN(updatedDate.getTime())) {
+                        setForm((prev) => ({
+                          ...prev,
+                          maintenance: updatedDate.toISOString(),
+                        }));
+                      }
+                    }}
+                    onError={(error) => {
+                      if (error) {
+                        setErrors((prev) => ({
+                          ...prev,
+                          maintenance: true,
+                        }));
+                      }
+                    }}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={6}>
                   <FormControl fullWidth>
                     <InputLabel id="demo-simple-select-label">
-                      Привід
+                      Еко клас
                     </InputLabel>
                     <Select
                       labelId="demo-simple-select-label"
                       id="demo-simple-select"
-                      label="Привід"
-                      value={form.drive_type}
+                      label="Еко клас"
+                      value={form.ecoClass}
                       onChange={handleChange}
-                      name="drive_type"
-                      error={errors.drive_type}
+                      name="ecoClass"
+                      error={errors.ecoClass}
                     >
-                      {Object.keys(DRIVE_TYPE).map((value, index) => {
+                      {Object.keys(ECO_CLASS).map((value, index) => {
                         return (
                           <MenuItem key={value} value={value}>
-                            {DRIVE_TYPE[value as keyof typeof DRIVE_TYPE].label}
+                            {ECO_CLASS[value as keyof typeof ECO_CLASS].label}
                           </MenuItem>
                         );
                       })}
@@ -684,52 +701,27 @@ const NewCarPage = () => {
                 </Grid>
                 <Grid item xs={12} sm={6}>
                   <FormControl fullWidth>
-                    <InputLabel id="demo-simple-select-label">Стан</InputLabel>
+                    <InputLabel id="demo-simple-select-label">
+                      Кількість ключів
+                    </InputLabel>
                     <Select
                       labelId="demo-simple-select-label"
                       id="demo-simple-select"
-                      label="Стан"
-                      value={form.condition}
+                      label="Кількість ключів"
+                      value={form.keys}
                       onChange={handleChange}
-                      name="condition"
-                      error={errors.condition}
+                      name="keys"
+                      error={errors.keys}
                     >
-                      {Object.keys(CONDITION).map((value) => {
+                      {Object.keys(KEYS).map((value, index) => {
                         return (
                           <MenuItem key={value} value={value}>
-                            {
-                              CONDITION[value as keyof typeof CONDITION].label
-                                .en
-                            }
+                            {KEYS[value as keyof typeof KEYS].label}
                           </MenuItem>
                         );
                       })}
                     </Select>
                   </FormControl>
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                  <TextField
-                    fullWidth
-                    label="Об'єм двигуна"
-                    type="number"
-                    value={form.engine_size}
-                    onChange={handleChange}
-                    name="engine_size"
-                    error={errors.engine_size}
-                    helperText={errors.engine_size ? "не коректні дані" : ""}
-                  />
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                  <TextField
-                    value={form.door_count}
-                    onChange={handleChange}
-                    fullWidth
-                    label="Кількість дверей"
-                    type="number"
-                    name="door_count"
-                    error={errors.door_count}
-                    helperText={errors.door_count ? "не коректні дані" : ""}
-                  />
                 </Grid>
                 <Grid item xs={12} sm={6}>
                   <TextField
@@ -742,38 +734,6 @@ const NewCarPage = () => {
                     error={errors.price}
                     helperText={errors.price ? "не коректні дані" : ""}
                   />
-                </Grid>
-                {/* <Grid item xs={12} sm={6}>
-                  <TextField
-                    value={form.color}
-                    onChange={handleChange}
-                    name="color"
-                    fullWidth
-                    label="Колір"
-                    type="text"
-                  />
-                </Grid> */}
-                <Grid item xs={12} sm={6}>
-                  <FormControl fullWidth>
-                    <InputLabel id="demo-simple-select-label">Колір</InputLabel>
-                    <Select
-                      labelId="demo-simple-select-label"
-                      id="demo-simple-select"
-                      label="Колір"
-                      value={form.color}
-                      onChange={handleChange}
-                      name="color"
-                      error={errors.color}
-                    >
-                      {Object.keys(CAR_COLORS).map((value) => {
-                        return (
-                          <MenuItem key={value} value={value}>
-                            {CAR_COLORS[value as keyof typeof CAR_COLORS].ua}
-                          </MenuItem>
-                        );
-                      })}
-                    </Select>
-                  </FormControl>
                 </Grid>
               </Grid>
             </Paper>

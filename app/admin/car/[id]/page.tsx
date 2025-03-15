@@ -18,11 +18,6 @@ import "swiper/css/navigation";
 import "swiper/css/thumbs";
 import { FreeMode, Navigation, Thumbs } from "swiper/modules";
 import Grid from "@mui/material/Grid";
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemText from "@mui/material/ListItemText";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { Car } from "@/types";
 import { overviewData } from "./constants";
 import { LABELS } from "@/constants";
@@ -208,7 +203,17 @@ const CarPage = ({ params }: { params: { id: string } }) => {
                           string,
                           { ua: string }
                         >
-                      )[currentTitle].ua;
+                      )[currentTitle]?.ua;
+                    }
+                    if (
+                      type === "maintenance" ||
+                      type === "firstRegistration"
+                    ) {
+                      currentTitle = new Intl.DateTimeFormat("uk-UA", {
+                        day: "2-digit",
+                        month: "short",
+                        year: "numeric",
+                      }).format(new Date(currentTitle));
                     }
                     return (
                       <Grid item xs={12} sm={6} md={4} key={index}>
@@ -222,12 +227,6 @@ const CarPage = ({ params }: { params: { id: string } }) => {
                             gap: 2,
                           }}
                         >
-                          <Image
-                            src={item.src}
-                            alt={item.label}
-                            width={40}
-                            height={40}
-                          />
                           <Box
                             sx={{
                               display: "flex",
