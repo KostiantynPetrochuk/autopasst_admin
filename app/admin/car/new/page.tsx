@@ -111,11 +111,17 @@ const NewCarPage = () => {
     }));
   };
 
-  const handleImageChange = (event: any, index: any) => {
-    const file = event.target.files[0];
-    if (file) {
+  const handleImageChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+    index: number
+  ) => {
+    const files = event.target.files;
+    if (files) {
       const newImages = [...images];
-      newImages[index] = URL.createObjectURL(file);
+      const newImageUrls = Array.from(files).map((file) =>
+        URL.createObjectURL(file)
+      );
+      newImages.splice(index, 1, ...newImageUrls);
       setImages(newImages);
     }
   };
@@ -297,7 +303,9 @@ const NewCarPage = () => {
       document.querySelectorAll<HTMLInputElement>(".fileInput");
     filesInputs.forEach((input) => {
       if (input.files && input.files.length > 0) {
-        formData.append("files", input.files[0]);
+        Array.from(input.files).forEach((file) => {
+          formData.append("files", file);
+        });
       }
     });
 
@@ -400,7 +408,6 @@ const NewCarPage = () => {
                 Новий автомобіль
               </Typography>
             </Paper>
-
             {/* Grid for form inputs */}
             <Paper
               sx={{
@@ -737,7 +744,6 @@ const NewCarPage = () => {
                 </Grid>
               </Grid>
             </Paper>
-
             {/* Image upload */}
             <Paper
               sx={{
@@ -775,15 +781,12 @@ const NewCarPage = () => {
                         alignItems: "center",
                       }}
                     >
-                      {images[index] && (
+                      {image && (
                         <Image
-                          src={images[index]}
+                          src={image}
                           alt={`Фото ${index + 1}`}
                           layout="fill"
                           objectFit="cover"
-                          style={{
-                            display: images[index] ? "block" : "none",
-                          }}
                         />
                       )}
                       <IconButton
@@ -803,6 +806,7 @@ const NewCarPage = () => {
                           hidden
                           accept="image/*"
                           type="file"
+                          multiple
                           onChange={(e) => handleImageChange(e, index)}
                         />
                         <PhotoCamera sx={{ fontSize: 40 }} />
