@@ -24,7 +24,7 @@ import { useSession } from "next-auth/react";
 import { CONDITION, FUEL_TYPES } from "@/constants";
 import { Car } from "@/types";
 import Pagination from "@mui/material/Pagination";
-import { BACKEND_URL } from "@/lib/Constants";
+import { STATIC_URL } from "@/lib/Constants";
 
 const LIMIT = 5;
 
@@ -53,7 +53,7 @@ const CarPage = () => {
         try {
           //
           const { data: brandsResult, error: brandsError } =
-            await fetchWithAuth("/brands", {
+            await fetchWithAuth("/brand", {
               method: "GET",
             });
           if (brandsError) {
@@ -168,7 +168,7 @@ const CarPage = () => {
                   <Grid container spacing={2} alignItems="center">
                     <Grid item xs={12} sm={4} md={3}>
                       <Image
-                        src={`${BACKEND_URL}/uploads/cars/${carImage}`}
+                        src={`${STATIC_URL}/uploads/cars/${carImage}`}
                         alt={`${car.brandName} logo`}
                         width={0}
                         height={0}

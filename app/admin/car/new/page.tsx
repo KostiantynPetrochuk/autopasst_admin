@@ -71,7 +71,7 @@ const NewCarPage = () => {
     body: "",
     firstRegistration: "",
     mileage: 0,
-    fuel_type: "",
+    fuelType: "",
     transmission: "",
     maintenance: "", // техобслуговування до
     ecoClass: "",
@@ -87,7 +87,7 @@ const NewCarPage = () => {
     body: false,
     firstRegistration: false,
     mileage: false,
-    fuel_type: false,
+    fuelType: false,
     transmission: false,
     maintenance: false,
     ecoClass: false,
@@ -141,7 +141,7 @@ const NewCarPage = () => {
       body,
       firstRegistration,
       mileage,
-      fuel_type,
+      fuelType,
       transmission,
       maintenance,
       ecoClass,
@@ -209,10 +209,10 @@ const NewCarPage = () => {
       return;
     }
 
-    if (!fuel_type) {
+    if (!fuelType) {
       setErrors((prev) => ({
         ...prev,
-        fuel_type: true,
+        fuelType: true,
       }));
       setLoading(false);
       setMessage((prev) => ({
@@ -277,7 +277,7 @@ const NewCarPage = () => {
       !body ||
       !firstRegistration ||
       !mileage ||
-      !fuel_type ||
+      !fuelType ||
       !transmission ||
       !maintenance ||
       !ecoClass ||
@@ -334,7 +334,7 @@ const NewCarPage = () => {
         body: "",
         firstRegistration: "",
         mileage: 0,
-        fuel_type: "",
+        fuelType: "",
         transmission: "",
         maintenance: "", // техобслуговування до
         ecoClass: "",
@@ -353,7 +353,7 @@ const NewCarPage = () => {
     const getBrands = async () => {
       if (session.status === "authenticated") {
         setLoading(true);
-        const { data, error } = await fetchWithAuth("/brands", {
+        const { data, error } = await fetchWithAuth("/brand", {
           method: "GET",
         });
         if (error) {
@@ -366,7 +366,7 @@ const NewCarPage = () => {
           setLoading(false);
           return;
         }
-        dispatch(setBrands(data.brands));
+        dispatch(setBrands(data));
         setLoading(false);
       }
     };
@@ -601,10 +601,10 @@ const NewCarPage = () => {
                       labelId="demo-simple-select-label"
                       id="demo-simple-select"
                       label="Тип пального"
-                      value={form.fuel_type}
+                      value={form.fuelType}
                       onChange={handleChange}
-                      name="fuel_type"
-                      error={errors.fuel_type}
+                      name="fuelType"
+                      error={errors.fuelType}
                     >
                       {Object.keys(FUEL_TYPES).map((value) => {
                         return (

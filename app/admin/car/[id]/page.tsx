@@ -21,7 +21,7 @@ import Grid from "@mui/material/Grid";
 import { Car } from "@/types";
 import { overviewData } from "./constants";
 import { LABELS } from "@/constants";
-import { BACKEND_URL } from "@/lib/Constants";
+import { STATIC_URL } from "@/lib/Constants";
 
 const CarPage = ({ params }: { params: { id: string } }) => {
   const theme = useTheme();
@@ -123,7 +123,7 @@ const CarPage = ({ params }: { params: { id: string } }) => {
                 {car?.imageNames?.map((image) => (
                   <SwiperSlide key={image}>
                     <Image
-                      src={`${BACKEND_URL}/uploads/cars/${image}`}
+                      src={`${STATIC_URL}/uploads/cars/${image}`}
                       alt={`${image} logo`}
                       width={300}
                       height={300}
@@ -156,7 +156,7 @@ const CarPage = ({ params }: { params: { id: string } }) => {
                 {car?.imageNames?.map((image) => (
                   <SwiperSlide key={image}>
                     <Image
-                      src={`${BACKEND_URL}/uploads/cars/${image}`}
+                      src={`${STATIC_URL}/uploads/cars/${image}`}
                       alt={`${image} logo`}
                       height={200}
                       width={200}

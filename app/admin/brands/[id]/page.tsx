@@ -23,7 +23,7 @@ import {
 } from "@/store/features/brands/brandsSlice";
 import { Message, Loading } from "@/components";
 import { useSession } from "next-auth/react";
-import { BACKEND_URL } from "@/lib/Constants";
+import { STATIC_URL } from "@/lib/Constants";
 
 const BrandPage = ({ params }: { params: { id: string } }) => {
   const session = useSession();
@@ -64,7 +64,7 @@ const BrandPage = ({ params }: { params: { id: string } }) => {
       return;
     }
     try {
-      const { data, error } = await fetchWithAuth("/models", {
+      const { data, error } = await fetchWithAuth("/model", {
         method: "POST",
         body: JSON.stringify({ brandId: Number(params.id), modelName }),
         headers: {
@@ -83,13 +83,12 @@ const BrandPage = ({ params }: { params: { id: string } }) => {
         setLoading(false);
         return;
       }
-
       dispatch(
         addModelToBrand({
           brandId: params.id,
           model: {
-            id: data.model.id,
-            modelName: data.model.modelName,
+            id: data.id,
+            modelName: data.modelName,
           },
         })
       );
@@ -119,7 +118,7 @@ const BrandPage = ({ params }: { params: { id: string } }) => {
     const getBrands = async () => {
       if (session.status === "authenticated") {
         setLoading(true);
-        const { data, error } = await fetchWithAuth("/brands", {
+        const { data, error } = await fetchWithAuth("/brand", {
           method: "GET",
         });
         if (error) {
@@ -181,7 +180,7 @@ const BrandPage = ({ params }: { params: { id: string } }) => {
               elevation={24}
             >
               <Image
-                src={`${BACKEND_URL}/uploads/brands/${brand?.fileName}`}
+                src={`${STATIC_URL}/uploads/brands/${brand?.fileName}`}
                 alt="brand_logo"
                 height={50}
                 width={50}

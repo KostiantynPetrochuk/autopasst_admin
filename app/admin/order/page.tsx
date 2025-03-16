@@ -21,7 +21,7 @@ import Grid from "@mui/material/Grid";
 import { useSession } from "next-auth/react";
 import { Order } from "@/types";
 import Pagination from "@mui/material/Pagination";
-import { BACKEND_URL } from "@/lib/Constants";
+import { STATIC_URL } from "@/lib/Constants";
 
 const LIMIT = 5;
 
@@ -146,7 +146,7 @@ const OrderPage = () => {
                 <Grid container spacing={2} alignItems="center">
                   <Grid item xs={12} sm={4} md={3}>
                     <Image
-                      src={`${BACKEND_URL}/uploads/cars/${image}`}
+                      src={`${STATIC_URL}/uploads/cars/${image}`}
                       alt={`${order?.car?.brandName} logo`}
                       width={0}
                       height={0}
