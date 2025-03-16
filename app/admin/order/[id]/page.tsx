@@ -23,7 +23,7 @@ import {
 } from "@/store/features/brands/brandsSlice";
 import { Message, Loading } from "@/components";
 import { useSession } from "next-auth/react";
-import { STATIC_URL } from "@/lib/Constants";
+import { BACKEND_URL } from "@/lib/Constants";
 
 const Order = ({ params }: { params: { id: string } }) => {
   const session = useSession();
@@ -64,7 +64,7 @@ const Order = ({ params }: { params: { id: string } }) => {
       return;
     }
     try {
-      const { data, error } = await fetchWithAuth("/model", {
+      const { data, error } = await fetchWithAuth("/models", {
         method: "POST",
         body: JSON.stringify({ brandId: Number(params.id), modelName }),
         headers: {
@@ -119,7 +119,7 @@ const Order = ({ params }: { params: { id: string } }) => {
     const getBrands = async () => {
       if (session.status === "authenticated") {
         setLoading(true);
-        const { data, error } = await fetchWithAuth("/brand", {
+        const { data, error } = await fetchWithAuth("/brands", {
           method: "GET",
         });
         if (error) {
@@ -181,7 +181,7 @@ const Order = ({ params }: { params: { id: string } }) => {
               elevation={24}
             >
               <Image
-                src={`${STATIC_URL}/uploads/brands/${brand?.fileName}`}
+                src={`${BACKEND_URL}/uploads/brands/${brand?.fileName}`}
                 alt="brand_logo"
                 height={50}
                 width={50}
