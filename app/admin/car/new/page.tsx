@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import { useState, useEffect, ChangeEvent, SyntheticEvent } from "react";
+import { useState, useEffect, ChangeEvent } from "react";
 import { useRouter } from "next/navigation";
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
@@ -20,6 +20,7 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
 import {
   parseISO,
   setHours,
@@ -50,6 +51,7 @@ const NewCarPage = () => {
   const dispatch = useAppDispatch();
   const { fetchWithAuth } = useFetchWithAuth();
   const [loading, setLoading] = useState(false);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [images, setImages] = useState(Array(3).fill(null));
   const brands = useAppSelector(selectBrands);
   const [message, setMessage] = useState({
@@ -98,7 +100,7 @@ const NewCarPage = () => {
   const handleChange = (
     event:
       | ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-      | SelectChangeEvent
+      | SelectChangeEvent,
   ) => {
     const { name, value } = event.target;
     setErrors((prevErrors) => ({
@@ -113,13 +115,13 @@ const NewCarPage = () => {
 
   const handleImageChange = (
     event: React.ChangeEvent<HTMLInputElement>,
-    index: number
+    index: number,
   ) => {
     const files = event.target.files;
     if (files) {
       const newImages = [...images];
       const newImageUrls = Array.from(files).map((file) =>
-        URL.createObjectURL(file)
+        URL.createObjectURL(file),
       );
       newImages.splice(index, 1, ...newImageUrls);
       setImages(newImages);
@@ -299,6 +301,10 @@ const NewCarPage = () => {
       formData.append(key, form[key as keyof typeof form] as string);
     });
 
+    if (selectedFile) {
+      formData.append("specification", selectedFile);
+    }
+
     const filesInputs =
       document.querySelectorAll<HTMLInputElement>(".fileInput");
     filesInputs.forEach((input) => {
@@ -373,10 +379,10 @@ const NewCarPage = () => {
     if (session.status === "authenticated") {
       getBrands();
     }
-  }, [session]);
+  }, [session, dispatch, fetchWithAuth]);
 
   const currentBrand = brands.find(
-    (currentBrand) => currentBrand.id == form.brandId
+    (currentBrand) => currentBrand.id == form.brandId,
   );
 
   let modelsItems: any = [];
@@ -542,6 +548,7 @@ const NewCarPage = () => {
                     sx={{ width: "100%" }}
                     label="Перша реєстрація"
                     name="firstRegistration"
+                    views={["year", "month"]}
                     value={
                       form.firstRegistration
                         ? parseISO(form.firstRegistration)
@@ -557,7 +564,7 @@ const NewCarPage = () => {
                       }
                       const updatedDate = setMilliseconds(
                         setSeconds(setMinutes(setHours(date, 12), 0), 0),
-                        0
+                        0,
                       );
                       setErrors((prev) => ({
                         ...prev,
@@ -646,6 +653,7 @@ const NewCarPage = () => {
                 <Grid item xs={12} sm={6}>
                   <DatePicker
                     sx={{ width: "100%" }}
+                    views={["year", "month"]}
                     label="Техобслуговування до"
                     name="maintenance"
                     value={form.maintenance ? parseISO(form.maintenance) : null}
@@ -659,7 +667,7 @@ const NewCarPage = () => {
                       }
                       const updatedDate = setMilliseconds(
                         setSeconds(setMinutes(setHours(date, 12), 0), 0),
-                        0
+                        0,
                       );
                       setErrors((prev) => ({
                         ...prev,
@@ -744,6 +752,63 @@ const NewCarPage = () => {
                 </Grid>
               </Grid>
             </Paper>
+            {/* .pdf upload */}
+            <Paper
+              sx={{
+                padding: 2,
+                textAlign: "center",
+                marginTop: 2,
+              }}
+              elevation={24}
+            >
+              <Typography
+                sx={{
+                  marginBottom: 2,
+                }}
+                variant="h6"
+                component="h3"
+              >
+                Додати специфікацію
+              </Typography>
+              {!selectedFile ? (
+                <Button
+                  variant="contained"
+                  endIcon={<PictureAsPdfIcon />}
+                  component="label"
+                >
+                  Вибрати файл
+                  <input
+                    type="file"
+                    hidden
+                    onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                      const file = event.target.files?.[0];
+                      if (file) {
+                        setSelectedFile(file);
+                      }
+                    }}
+                    accept=".pdf"
+                  />
+                </Button>
+              ) : null}
+              {selectedFile && (
+                <Typography variant="body1" sx={{ marginTop: 2 }}>
+                  Вибраний файл: {selectedFile.name}
+                </Typography>
+              )}
+              {selectedFile && (
+                <Button
+                  variant="contained"
+                  endIcon={<HighlightOffIcon />}
+                  color="error"
+                  sx={{
+                    marginTop: 1,
+                  }}
+                  onClick={() => setSelectedFile(null)}
+                >
+                  Видалити
+                </Button>
+              )}
+            </Paper>
             {/* Image upload */}
             <Paper
               sx={{
@@ -753,18 +818,15 @@ const NewCarPage = () => {
               }}
               elevation={24}
             >
-              <Typography variant="h6" component="h3">
+              <Typography
+                sx={{
+                  marginBottom: 2,
+                }}
+                variant="h6"
+                component="h3"
+              >
                 Завантаження фото
               </Typography>
-            </Paper>
-            <Paper
-              sx={{
-                padding: 2,
-                textAlign: "center",
-                marginTop: 2,
-              }}
-              elevation={24}
-            >
               <Grid container spacing={2}>
                 {images.map((image, index) => (
                   <Grid item xs={6} sm={4} md={3} lg={2} key={index}>

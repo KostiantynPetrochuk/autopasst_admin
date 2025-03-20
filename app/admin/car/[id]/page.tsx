@@ -10,6 +10,8 @@ import Box from "@mui/material/Box";
 import { useFetchWithAuth } from "@/hooks";
 import { Message, Loading } from "@/components";
 import { useTheme } from "@mui/material/styles";
+import Button from "@mui/material/Button";
+import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
 
 import { Swiper, SwiperClass, SwiperSlide } from "swiper/react";
 import "swiper/css";
@@ -71,7 +73,7 @@ const CarPage = ({ params }: { params: { id: string } }) => {
     if (session.status === "authenticated") {
       getData();
     }
-  }, [session]);
+  }, [session, fetchWithAuth, params.id]);
 
   if (!car) {
     return <Loading loading={true} />;
@@ -86,7 +88,7 @@ const CarPage = ({ params }: { params: { id: string } }) => {
         <Box>
           <Box
             component="div"
-            sx={{ display: "flex", flexDirection: "column" }}
+            sx={{ display: "flex", flexDirection: "column", marginBottom: 2 }}
           >
             <Paper
               sx={{
@@ -172,7 +174,6 @@ const CarPage = ({ params }: { params: { id: string } }) => {
                 ))}
               </Swiper>
             </Paper>
-
             <Paper
               sx={{
                 padding: 2,
@@ -181,17 +182,14 @@ const CarPage = ({ params }: { params: { id: string } }) => {
               }}
               elevation={24}
             >
-              <Typography variant="h6">Основні характеристики</Typography>
-            </Paper>
-
-            <Paper
-              sx={{
-                padding: 2,
-                textAlign: "center",
-                marginTop: 2,
-              }}
-              elevation={24}
-            >
+              <Typography
+                sx={{
+                  marginBottom: 2,
+                }}
+                variant="h6"
+              >
+                Основні характеристики
+              </Typography>
               <Box>
                 <Grid container spacing={2}>
                   {overviewData.map((item, index) => {
@@ -210,10 +208,13 @@ const CarPage = ({ params }: { params: { id: string } }) => {
                       type === "firstRegistration"
                     ) {
                       currentTitle = new Intl.DateTimeFormat("uk-UA", {
-                        day: "2-digit",
+                        // day: "2-digit",
                         month: "short",
                         year: "numeric",
                       }).format(new Date(currentTitle));
+                    }
+                    if (type === "vin" && currentTitle === "") {
+                      currentTitle = "не вказано";
                     }
                     return (
                       <Grid item xs={12} sm={6} md={4} key={index}>
@@ -249,6 +250,47 @@ const CarPage = ({ params }: { params: { id: string } }) => {
                   })}
                 </Grid>
               </Box>
+            </Paper>
+            <Paper
+              sx={{
+                padding: 2,
+                textAlign: "center",
+                marginTop: 2,
+              }}
+              elevation={24}
+            >
+              <Typography
+                sx={{
+                  marginBottom: 2,
+                }}
+                variant="h6"
+              >
+                Специфікація
+              </Typography>
+              <Button
+                variant="contained"
+                endIcon={<PictureAsPdfIcon />}
+                component="label"
+                onClick={async () => {
+                  try {
+                    const fileUrl = `${BACKEND_URL}/uploads/cars/${car.specFilename}`;
+                    const response = await fetch(fileUrl);
+                    const blob = await response.blob();
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement("a");
+                    a.href = url;
+                    a.download = "document.pdf";
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    window.URL.revokeObjectURL(url);
+                  } catch (error) {
+                    console.log(error);
+                  }
+                }}
+              >
+                Завантажити
+              </Button>
             </Paper>
           </Box>
         </Box>

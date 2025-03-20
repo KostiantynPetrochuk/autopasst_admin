@@ -30,6 +30,7 @@ export type Car = {
   imageNames: string[];
   modelName: string;
   brandName: string;
+  specFilename: string;
   status: string;
   createdAt: string;
 };
