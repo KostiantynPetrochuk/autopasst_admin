@@ -118,27 +118,25 @@ const AddBrand = ({ open, setOpen }: any) => {
 
   useEffect(() => {
     const fetchData = async () => {
-      if (session.status === "authenticated") {
-        setLoading(true);
+      setLoading(true);
 
-        const { data, error } = await fetchWithAuth("/brands", {
-          method: "GET",
-        });
+      const { data, error } = await fetchWithAuth("/brands", {
+        method: "GET",
+      });
 
-        if (error) {
-          setMessage((prev) => ({
-            ...prev,
-            open: true,
-            severity: "error",
-            text: String(error),
-          }));
-          setLoading(false);
-          return;
-        }
-
-        dispatch(setBrands(data.brands));
+      if (error) {
+        setMessage((prev) => ({
+          ...prev,
+          open: true,
+          severity: "error",
+          text: String(error),
+        }));
         setLoading(false);
+        return;
       }
+
+      dispatch(setBrands(data.brands));
+      setLoading(false);
     };
 
     if (session.status === "authenticated") {

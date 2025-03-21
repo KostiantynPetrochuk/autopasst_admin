@@ -100,7 +100,7 @@ const NewCarPage = () => {
   const handleChange = (
     event:
       | ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-      | SelectChangeEvent,
+      | SelectChangeEvent
   ) => {
     const { name, value } = event.target;
     setErrors((prevErrors) => ({
@@ -115,13 +115,13 @@ const NewCarPage = () => {
 
   const handleImageChange = (
     event: React.ChangeEvent<HTMLInputElement>,
-    index: number,
+    index: number
   ) => {
     const files = event.target.files;
     if (files) {
       const newImages = [...images];
       const newImageUrls = Array.from(files).map((file) =>
-        URL.createObjectURL(file),
+        URL.createObjectURL(file)
       );
       newImages.splice(index, 1, ...newImageUrls);
       setImages(newImages);
@@ -196,7 +196,7 @@ const NewCarPage = () => {
       return;
     }
 
-    if (mileage <= 0) {
+    if (mileage < 0) {
       setErrors((prev) => ({
         ...prev,
         mileage: true,
@@ -357,32 +357,30 @@ const NewCarPage = () => {
 
   useEffect(() => {
     const getBrands = async () => {
-      if (session.status === "authenticated") {
-        setLoading(true);
-        const { data, error } = await fetchWithAuth("/brands", {
-          method: "GET",
-        });
-        if (error) {
-          setMessage((prev) => ({
-            ...prev,
-            open: true,
-            severity: "error",
-            text: String(error),
-          }));
-          setLoading(false);
-          return;
-        }
-        dispatch(setBrands(data.brands));
+      setLoading(true);
+      const { data, error } = await fetchWithAuth("/brands", {
+        method: "GET",
+      });
+      if (error) {
+        setMessage((prev) => ({
+          ...prev,
+          open: true,
+          severity: "error",
+          text: String(error),
+        }));
         setLoading(false);
+        return;
       }
+      dispatch(setBrands(data.brands));
+      setLoading(false);
     };
     if (session.status === "authenticated") {
       getBrands();
     }
-  }, [session, dispatch, fetchWithAuth]);
+  }, [session]);
 
   const currentBrand = brands.find(
-    (currentBrand) => currentBrand.id == form.brandId,
+    (currentBrand) => currentBrand.id == form.brandId
   );
 
   let modelsItems: any = [];
@@ -564,7 +562,7 @@ const NewCarPage = () => {
                       }
                       const updatedDate = setMilliseconds(
                         setSeconds(setMinutes(setHours(date, 12), 0), 0),
-                        0,
+                        0
                       );
                       setErrors((prev) => ({
                         ...prev,
@@ -667,7 +665,7 @@ const NewCarPage = () => {
                       }
                       const updatedDate = setMilliseconds(
                         setSeconds(setMinutes(setHours(date, 12), 0), 0),
-                        0,
+                        0
                       );
                       setErrors((prev) => ({
                         ...prev,

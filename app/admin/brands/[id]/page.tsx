@@ -117,24 +117,22 @@ const BrandPage = ({ params }: { params: { id: string } }) => {
 
   useEffect(() => {
     const getBrands = async () => {
-      if (session.status === "authenticated") {
-        setLoading(true);
-        const { data, error } = await fetchWithAuth("/brands", {
-          method: "GET",
-        });
-        if (error) {
-          setMessage((prev) => ({
-            ...prev,
-            open: true,
-            severity: "error",
-            text: String(error),
-          }));
-          setLoading(false);
-          return;
-        }
-        dispatch(setBrands(data.brands));
+      setLoading(true);
+      const { data, error } = await fetchWithAuth("/brands", {
+        method: "GET",
+      });
+      if (error) {
+        setMessage((prev) => ({
+          ...prev,
+          open: true,
+          severity: "error",
+          text: String(error),
+        }));
         setLoading(false);
+        return;
       }
+      dispatch(setBrands(data.brands));
+      setLoading(false);
     };
 
     if (!brands.length && session.status === "authenticated") {

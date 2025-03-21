@@ -25,6 +25,7 @@ import { CONDITION, FUEL_TYPES } from "@/constants";
 import { Car } from "@/types";
 import Pagination from "@mui/material/Pagination";
 import { BACKEND_URL } from "@/lib/Constants";
+import { selectBrands } from "@/store/features/brands/brandsSlice";
 
 const LIMIT = 5;
 
@@ -32,6 +33,7 @@ const CarPage = () => {
   const session = useSession();
   const dispatch = useAppDispatch();
   const { fetchWithAuth } = useFetchWithAuth();
+  const brands = useAppSelector(selectBrands);
   const [loading, setLoading] = useState(true);
   const [totalPages, setTotalPages] = useState(0);
   const [page, setPage] = useState(1);
@@ -48,10 +50,9 @@ const CarPage = () => {
 
   useEffect(() => {
     const getData = async () => {
-      if (session.status === "authenticated") {
-        setLoading(true);
-        try {
-          //
+      setLoading(true);
+      try {
+        if (!brands || !brands.length) {
           const { data: brandsResult, error: brandsError } =
             await fetchWithAuth("/brands", {
               method: "GET",
@@ -65,70 +66,36 @@ const CarPage = () => {
             }));
           }
           dispatch(setBrands(brandsResult.brands));
-          //
-          const { data: carsResult, error: carsError } = await fetchWithAuth(
-            `/cars?offset=0&limit=${LIMIT}`,
-            {
-              headers: {
-                "X-Admin": "true",
-              },
-              method: "GET",
-            }
-          );
-          if (carsError) {
-            setMessage((prev) => ({
-              ...prev,
-              open: true,
-              severity: "error",
-              text: "Помилка завантаження автомобілів.",
-            }));
-          }
-          dispatch(setCars(carsResult.cars));
-          setTotalPages(Math.ceil(carsResult.total / LIMIT));
-        } catch (error) {
-          console.error("Error fetching data:", error);
-        } finally {
-          setLoading(false);
         }
+        const { data: carsResult, error: carsError } = await fetchWithAuth(
+          `/cars?offset=${(page - 1) * LIMIT}&limit=${LIMIT}`,
+          {
+            headers: {
+              "X-Admin": "true",
+            },
+            method: "GET",
+          }
+        );
+        if (carsError) {
+          setMessage((prev) => ({
+            ...prev,
+            open: true,
+            severity: "error",
+            text: "Помилка завантаження автомобілів.",
+          }));
+        }
+        dispatch(setCars(carsResult.cars));
+        setTotalPages(Math.ceil(carsResult.total / LIMIT));
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      } finally {
+        setLoading(false);
       }
     };
     if (session.status === "authenticated") {
       getData();
     }
-  }, [session]);
-
-  useEffect(() => {
-    const getData = async () => {
-      if (session.status === "authenticated") {
-        setLoading(true);
-        try {
-          const { data: carsResult, error: carsError } = await fetchWithAuth(
-            `/cars?offset=${(page - 1) * LIMIT}&limit=${LIMIT}`,
-            {
-              method: "GET",
-            }
-          );
-          if (carsError) {
-            setMessage((prev) => ({
-              ...prev,
-              open: true,
-              severity: "error",
-              text: "Помилка завантаження автомобілів.",
-            }));
-          }
-          dispatch(setCars(carsResult.cars));
-          setTotalPages(Math.ceil(carsResult.total / LIMIT));
-        } catch (error) {
-          console.error("Error fetching data:", error);
-        } finally {
-          setLoading(false);
-        }
-      }
-    };
-    if (session.status === "authenticated") {
-      getData();
-    }
-  }, [page]);
+  }, [session, page]);
 
   let listContent = null;
 
