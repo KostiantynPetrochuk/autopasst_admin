@@ -181,6 +181,21 @@ const NewCarPage = () => {
       return;
     }
 
+    if (!condition) {
+      setErrors((prev) => ({
+        ...prev,
+        condition: true,
+      }));
+      setLoading(false);
+      setMessage((prev) => ({
+        ...prev,
+        open: true,
+        severity: "warning",
+        text: "Будь ласка, вкажіть стан автомобіля!",
+      }));
+      return;
+    }
+
     if (!body) {
       setErrors((prev) => ({
         ...prev,
@@ -192,6 +207,21 @@ const NewCarPage = () => {
         open: true,
         severity: "warning",
         text: "Будь ласка, оберіть тип кузова автомобіля!",
+      }));
+      return;
+    }
+
+    if (!firstRegistration) {
+      setErrors((prev) => ({
+        ...prev,
+        firstRegistration: true,
+      }));
+      setLoading(false);
+      setMessage((prev) => ({
+        ...prev,
+        open: true,
+        severity: "warning",
+        text: "Будь ласка, оберіть дату першої  реєстрації!",
       }));
       return;
     }
@@ -241,17 +271,32 @@ const NewCarPage = () => {
       return;
     }
 
-    if (!condition) {
+    if (!maintenance) {
       setErrors((prev) => ({
         ...prev,
-        condition: true,
+        maintenance: true,
       }));
       setLoading(false);
       setMessage((prev) => ({
         ...prev,
         open: true,
         severity: "warning",
-        text: "Будь ласка, оберіть стан автомобіля!",
+        text: "Будь ласка, вкажіть дату завершення техобслуговування!",
+      }));
+      return;
+    }
+
+    if (!ecoClass) {
+      setErrors((prev) => ({
+        ...prev,
+        ecoClass: true,
+      }));
+      setLoading(false);
+      setMessage((prev) => ({
+        ...prev,
+        open: true,
+        severity: "warning",
+        text: "Будь ласка, оберіть еко клас!",
       }));
       return;
     }
