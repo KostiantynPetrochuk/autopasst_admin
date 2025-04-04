@@ -8,10 +8,12 @@ import TextField from "@mui/material/TextField";
 const AddModelDialog = ({
   open,
   handleClose,
+  modelId,
   modelName,
   setModelName,
   handleSave,
 }: any) => {
+  console.log({ modelId });
   return (
     <Dialog
       open={open}
@@ -19,7 +21,9 @@ const AddModelDialog = ({
       aria-labelledby="alert-dialog-title"
       aria-describedby="alert-dialog-description"
     >
-      <DialogTitle id="alert-dialog-title">{"Нова модель"}</DialogTitle>
+      <DialogTitle id="alert-dialog-title">
+        {modelName ? "Редагування" : "Нова модель"}
+      </DialogTitle>
       <DialogContent>
         <TextField
           sx={{ marginTop: "10px" }}
@@ -32,7 +36,7 @@ const AddModelDialog = ({
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose}>Скасувати</Button>
-        <Button onClick={handleSave} autoFocus>
+        <Button onClick={() => handleSave(modelId)} autoFocus>
           Зберегти
         </Button>
       </DialogActions>

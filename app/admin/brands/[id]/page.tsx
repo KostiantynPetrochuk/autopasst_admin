@@ -1,5 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
+import { useSession } from "next-auth/react";
 import Image from "next/image";
 import { AdminHeader } from "@/components";
 import Paper from "@mui/material/Paper";
@@ -20,17 +21,19 @@ import {
   selectBrands,
   setBrands,
   addModelToBrand,
+  changeModelName,
 } from "@/store/features/brands/brandsSlice";
 import { Message, Loading } from "@/components";
-import { useSession } from "next-auth/react";
 import { BACKEND_URL } from "@/lib/Constants";
 
 const BrandPage = ({ params }: { params: { id: string } }) => {
   const session = useSession();
   const [open, setOpen] = useState(false);
+  const [openEditModel, setOpenEditModel] = useState(false);
   const dispatch = useAppDispatch();
   const { fetchWithAuth } = useFetchWithAuth();
   const [modelName, setModelName] = useState<string>("");
+  const [modelId, setModelId] = useState<number>();
   const brands = useAppSelector(selectBrands);
   const brand = brands.find((brand) => brand.id == params.id);
   const [loading, setLoading] = useState(false);
@@ -49,6 +52,10 @@ const BrandPage = ({ params }: { params: { id: string } }) => {
   const handleClose = () => {
     setModelName("");
     setOpen(false);
+  };
+  const handleCloseEditModel = () => {
+    setModelName("");
+    setOpenEditModel(false);
   };
 
   const handleSave = async () => {
@@ -111,6 +118,65 @@ const BrandPage = ({ params }: { params: { id: string } }) => {
       }));
       setModelName("");
       setOpen(false);
+      setLoading(false);
+    }
+  };
+
+  const handleEdit = async () => {
+    setLoading(true);
+    if (!modelName) {
+      setMessage((prev) => ({
+        ...prev,
+        open: true,
+        severity: "warning",
+        text: "Будь ласка, вкажіть назву моделі.",
+      }));
+      setLoading(false);
+      return;
+    }
+    try {
+      const { data, error } = await fetchWithAuth("/models", {
+        method: "PATCH",
+        body: JSON.stringify({ modelId, modelName }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      if (error) {
+        setMessage((prev) => ({
+          ...prev,
+          open: true,
+          severity: "error",
+          text: String(error),
+        }));
+        setModelName("");
+        setOpen(false);
+        setLoading(false);
+        return;
+      }
+      dispatch(
+        changeModelName({
+          brandId: brand?.id,
+          modelId,
+          modelName,
+        })
+      );
+      setMessage((prev) => ({
+        ...prev,
+        open: true,
+        severity: "success",
+        text: "Назву моделі успішно змінено.",
+      }));
+    } catch (error) {
+      setMessage((prev) => ({
+        ...prev,
+        open: true,
+        severity: "error",
+        text: String(error),
+      }));
+    } finally {
+      setModelName("");
+      setOpenEditModel(false);
       setLoading(false);
     }
   };
@@ -210,7 +276,15 @@ const BrandPage = ({ params }: { params: { id: string } }) => {
               >
                 {brand?.models?.map((model) => {
                   return (
-                    <ListItem key={model.id} disablePadding>
+                    <ListItem
+                      onClick={() => {
+                        setOpenEditModel(true);
+                        setModelName(model.modelName);
+                        setModelId(model.id);
+                      }}
+                      key={model.id}
+                      disablePadding
+                    >
                       <ListItemButton>
                         <ListItemIcon>
                           <Typography>{model.id}.</Typography>
@@ -221,6 +295,14 @@ const BrandPage = ({ params }: { params: { id: string } }) => {
                   );
                 })}
               </List>
+              <AddModelDialog
+                open={openEditModel}
+                handleClose={handleCloseEditModel}
+                modelId={modelId}
+                modelName={modelName}
+                setModelName={setModelName}
+                handleSave={handleEdit}
+              />
             </Paper>
             <Fab
               sx={{

@@ -19,10 +19,21 @@ export const brandsSlice = createSlice({
         brand.models.push(model);
       }
     },
+    changeModelName: (state, action) => {
+      const { brandId, modelId, modelName } = action.payload;
+      const brand = state.find((b) => b.id === brandId);
+      if (brand) {
+        const model = brand.models.find((m) => m.id === modelId);
+        if (model) {
+          model.modelName = modelName;
+        }
+      }
+    },
   },
 });
 
-export const { setBrands, addModelToBrand } = brandsSlice.actions;
+export const { setBrands, addModelToBrand, changeModelName } =
+  brandsSlice.actions;
 
 export const selectBrands = (state: RootState) => state.brands;
 
