@@ -1,0 +1,17 @@
+.notFound {
+  font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.notFoundLink {
+  color: blue;
+}
+
+.notFoundLink:hover {
+  color: blue;
+  text-decoration: underline;
+}
