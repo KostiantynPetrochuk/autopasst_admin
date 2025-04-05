@@ -8,7 +8,7 @@ export type Brand = {
   id: string;
   brandName: string;
   fileName: string;
-  models: Model[];
+  models?: Model[];
 };
 
 export type Car = {
@@ -33,14 +33,17 @@ export type Car = {
   specFilename: string;
   status: string;
   createdAt: string;
+  brand?: Brand;
+  model?: Model;
 };
 
 export type Order = {
   id: number;
-  firstName: string;
-  lastName: string;
+  name: string;
   phone: string;
-  email: string;
+  info_method: string;
+  contact: string;
+  country_of_exploitation: string;
   carID: number;
   createdAt: string;
   car: Car;

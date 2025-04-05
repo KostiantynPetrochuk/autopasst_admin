@@ -169,13 +169,25 @@ const OrderPage = () => {
                       }}
                     >
                       <Typography variant="body1">
-                        {order?.car?.brandName} {order?.car?.modelName}
+                        {order?.car?.brand?.brandName}{" "}
+                        {order?.car?.model?.modelName}
                       </Typography>
-                      <Typography variant="body1">{order.firstName}</Typography>
                       <Typography variant="body1">
-                        {order?.car?.year} рік
+                        {new Intl.DateTimeFormat("uk-UA", {
+                          day: "2-digit",
+                          month: "short",
+                          year: "numeric",
+                        }).format(new Date(order?.car?.firstRegistration))}
                       </Typography>
-                      <Typography variant="body1">{order.lastName}</Typography>
+                      <Typography variant="body1">{order.name}</Typography>
+                      <Typography variant="body1">{order.phone}</Typography>
+                      <Typography variant="body1">
+                        {new Intl.DateTimeFormat("uk-UA", {
+                          day: "2-digit",
+                          month: "short",
+                          year: "numeric",
+                        }).format(new Date(order.createdAt))}
+                      </Typography>
                       <Typography variant="body1">
                         {new Intl.NumberFormat("de-DE", {
                           style: "currency",
@@ -183,15 +195,6 @@ const OrderPage = () => {
                           minimumFractionDigits: 0,
                           maximumFractionDigits: 0,
                         }).format(order?.car?.price)}
-                      </Typography>
-                      <Typography variant="body1">{order.phone}</Typography>
-                      <Typography variant="body1"></Typography>
-                      <Typography variant="body1">
-                        {new Intl.DateTimeFormat("uk-UA", {
-                          day: "2-digit",
-                          month: "short",
-                          year: "numeric",
-                        }).format(new Date(order.createdAt))}
                       </Typography>
                     </Box>
                   </Grid>
