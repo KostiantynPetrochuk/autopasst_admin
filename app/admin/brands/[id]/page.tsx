@@ -1,6 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
+import Link from "next/link";
 import Image from "next/image";
 import { AdminHeader } from "@/components";
 import Paper from "@mui/material/Paper";
@@ -14,6 +15,8 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import Fab from "@mui/material/Fab";
 import AddIcon from "@mui/icons-material/Add";
+import Button from "@mui/material/Button";
+import HomeIcon from "@mui/icons-material/Home";
 import { AddModelDialog } from "@/partials/Brands";
 import { useFetchWithAuth } from "@/hooks";
 import { useAppDispatch, useAppSelector } from "@/hooks";
@@ -206,11 +209,10 @@ const BrandPage = ({ params }: { params: { id: string } }) => {
     }
   }, [session]);
 
-  return (
-    <>
-      <AdminHeader />
-      <Loading loading={loading} />
-      <Message message={message} setMessage={setMessage} />
+  let content = null;
+
+  if (!loading && brand) {
+    content = (
       <Container component="main">
         <Box>
           <Box
@@ -324,6 +326,43 @@ const BrandPage = ({ params }: { params: { id: string } }) => {
           </Box>
         </Box>
       </Container>
+    );
+  }
+
+  if (!loading && !brand) {
+    content = (
+      <Box component="div" sx={{ display: "flex", flexDirection: "column" }}>
+        <Paper
+          sx={{
+            padding: 2,
+            textAlign: "center",
+            marginTop: 2,
+          }}
+          elevation={24}
+        >
+          <Typography variant="h5" component="h2">
+            Такого бренду не існує
+          </Typography>
+          <Link href="/admin/dashboard" passHref>
+            <Button
+              variant="contained"
+              sx={{ marginTop: "12px", width: 160 }}
+              endIcon={<HomeIcon />}
+            >
+              На головну
+            </Button>
+          </Link>
+        </Paper>
+      </Box>
+    );
+  }
+
+  return (
+    <>
+      <AdminHeader />
+      <Loading loading={loading} />
+      <Message message={message} setMessage={setMessage} />
+      {content}
     </>
   );
 };

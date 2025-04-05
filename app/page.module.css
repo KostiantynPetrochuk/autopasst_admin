@@ -6,12 +6,3 @@
   align-items: center;
   text-align: center;
 }
-
-.notFoundLink {
-  color: blue;
-}
-
-.notFoundLink:hover {
-  color: blue;
-  text-decoration: underline;
-}

@@ -144,6 +144,67 @@ const AddBrand = ({ open, setOpen }: any) => {
     }
   }, [session]);
 
+  let content = null;
+
+  if (!loading) {
+    content = (
+      <>
+        <Box sx={{ width: "100%", maxWidth: 360, bgcolor: "background.paper" }}>
+          {brands.length ? (
+            <Paper
+              sx={{
+                padding: 2,
+                textAlign: "center",
+              }}
+              elevation={24}
+            >
+              <List>
+                {brands?.map((brand: Brand) => {
+                  return (
+                    <Link key={brand.id} href={`/admin/brands/${brand.id}`}>
+                      <ListItem disablePadding>
+                        <ListItemButton>
+                          <ListItemIcon>
+                            <Image
+                              src={`${BACKEND_URL}/uploads/brands/${brand.fileName}`}
+                              alt="brand_logo"
+                              height={50}
+                              width={50}
+                            />
+                          </ListItemIcon>
+                          <ListItemText primary={brand.brandName} />
+                        </ListItemButton>
+                      </ListItem>
+                    </Link>
+                  );
+                })}
+              </List>
+            </Paper>
+          ) : null}
+        </Box>
+        <Fab
+          sx={{
+            margin: "20px auto 0 auto",
+          }}
+          color="primary"
+          aria-label="add"
+          onClick={handleClickOpen}
+        >
+          <AddIcon />
+        </Fab>
+        <AddBrandDialog
+          open={open}
+          handleClose={handleClose}
+          brandName={brandName}
+          setBrandName={setBrandName}
+          selectedImage={selectedImage}
+          handleImageChange={handleImageChange}
+          handleSave={handleSave}
+        />
+      </>
+    );
+  }
+
   return (
     <Box
       component="div"
@@ -156,57 +217,7 @@ const AddBrand = ({ open, setOpen }: any) => {
     >
       <Loading loading={loading} />
       <Message message={message} setMessage={setMessage} />
-      <Box sx={{ width: "100%", maxWidth: 360, bgcolor: "background.paper" }}>
-        <Paper
-          sx={{
-            padding: 2,
-            textAlign: "center",
-            marginTop: 2,
-          }}
-          elevation={24}
-        >
-          <List>
-            {brands?.map((brand: Brand) => {
-              return (
-                <Link key={brand.id} href={`/admin/brands/${brand.id}`}>
-                  <ListItem disablePadding>
-                    <ListItemButton>
-                      <ListItemIcon>
-                        <Image
-                          src={`${BACKEND_URL}/uploads/brands/${brand.fileName}`}
-                          alt="brand_logo"
-                          height={50}
-                          width={50}
-                        />
-                      </ListItemIcon>
-                      <ListItemText primary={brand.brandName} />
-                    </ListItemButton>
-                  </ListItem>
-                </Link>
-              );
-            })}
-          </List>
-        </Paper>
-      </Box>
-      <Fab
-        sx={{
-          margin: "20px auto 0 auto",
-        }}
-        color="primary"
-        aria-label="add"
-        onClick={handleClickOpen}
-      >
-        <AddIcon />
-      </Fab>
-      <AddBrandDialog
-        open={open}
-        handleClose={handleClose}
-        brandName={brandName}
-        setBrandName={setBrandName}
-        selectedImage={selectedImage}
-        handleImageChange={handleImageChange}
-        handleSave={handleSave}
-      />
+      {content}
     </Box>
   );
 };

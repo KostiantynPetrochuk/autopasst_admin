@@ -13,7 +13,6 @@ const AddModelDialog = ({
   setModelName,
   handleSave,
 }: any) => {
-  console.log({ modelId });
   return (
     <Dialog
       open={open}
