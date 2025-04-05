@@ -74,40 +74,7 @@ const OrderPage = () => {
     if (session.status === "authenticated") {
       getData();
     }
-  }, [session]);
-
-  useEffect(() => {
-    const getData = async () => {
-      if (session.status === "authenticated") {
-        setLoading(true);
-        try {
-          const { data, error } = await fetchWithAuth(
-            `/orders?offset=${(page - 1) * LIMIT}&limit=${LIMIT}`,
-            {
-              method: "GET",
-            }
-          );
-          if (error) {
-            setMessage((prev) => ({
-              ...prev,
-              open: true,
-              severity: "error",
-              text: "Помилка завантаження автомобілів.",
-            }));
-          }
-          dispatch(setOrders(data.orders));
-          setTotalPages(Math.ceil(data.total / LIMIT));
-        } catch (error) {
-          console.error("Error fetching data:", error);
-        } finally {
-          setLoading(false);
-        }
-      }
-    };
-    if (session.status === "authenticated") {
-      getData();
-    }
-  }, [page]);
+  }, [session, page]);
 
   let listContent = null;
 
@@ -159,7 +126,6 @@ const OrderPage = () => {
                       }}
                     />
                   </Grid>
-
                   <Grid item xs={12} sm={8} md={9}>
                     <Box
                       sx={{
