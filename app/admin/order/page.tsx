@@ -108,65 +108,67 @@ const OrderPage = () => {
             image = order?.car?.imageNames[0];
           }
           return (
-            <ListItem key={order.id} disablePadding>
-              <ListItemButton>
-                <Grid container spacing={2} alignItems="center">
-                  <Grid item xs={12} sm={4} md={3}>
-                    <Image
-                      src={`${BACKEND_URL}/uploads/cars/${image}`}
-                      alt={`${order?.car?.brandName} logo`}
-                      width={0}
-                      height={0}
-                      sizes="100vw"
-                      priority={true}
-                      style={{
-                        width: "100%",
-                        height: "auto",
-                        objectFit: "contain",
-                      }}
-                    />
+            <Link key={order.id} href={`/admin/order/${order.id}`}>
+              <ListItem key={order.id} disablePadding>
+                <ListItemButton>
+                  <Grid container spacing={2} alignItems="center">
+                    <Grid item xs={12} sm={4} md={3}>
+                      <Image
+                        src={`${BACKEND_URL}/uploads/cars/${image}`}
+                        alt={`${order?.car?.brandName} logo`}
+                        width={0}
+                        height={0}
+                        sizes="100vw"
+                        priority={true}
+                        style={{
+                          width: "100%",
+                          height: "auto",
+                          objectFit: "contain",
+                        }}
+                      />
+                    </Grid>
+                    <Grid item xs={12} sm={8} md={9}>
+                      <Box
+                        sx={{
+                          display: "grid",
+                          gridTemplateColumns: "1fr 1fr",
+                          gap: 1,
+                        }}
+                      >
+                        <Typography variant="body1">
+                          {order?.car?.brand?.brandName}{" "}
+                          {order?.car?.model?.modelName}
+                        </Typography>
+                        <Typography variant="body1">
+                          {new Intl.DateTimeFormat("uk-UA", {
+                            day: "2-digit",
+                            month: "short",
+                            year: "numeric",
+                          }).format(new Date(order?.car?.firstRegistration))}
+                        </Typography>
+                        <Typography variant="body1">{order.name}</Typography>
+                        <Typography variant="body1">{order.phone}</Typography>
+                        <Typography variant="body1">
+                          {new Intl.DateTimeFormat("uk-UA", {
+                            day: "2-digit",
+                            month: "short",
+                            year: "numeric",
+                          }).format(new Date(order.createdAt))}
+                        </Typography>
+                        <Typography variant="body1">
+                          {new Intl.NumberFormat("de-DE", {
+                            style: "currency",
+                            currency: "EUR",
+                            minimumFractionDigits: 0,
+                            maximumFractionDigits: 0,
+                          }).format(order?.car?.price)}
+                        </Typography>
+                      </Box>
+                    </Grid>
                   </Grid>
-                  <Grid item xs={12} sm={8} md={9}>
-                    <Box
-                      sx={{
-                        display: "grid",
-                        gridTemplateColumns: "1fr 1fr",
-                        gap: 1,
-                      }}
-                    >
-                      <Typography variant="body1">
-                        {order?.car?.brand?.brandName}{" "}
-                        {order?.car?.model?.modelName}
-                      </Typography>
-                      <Typography variant="body1">
-                        {new Intl.DateTimeFormat("uk-UA", {
-                          day: "2-digit",
-                          month: "short",
-                          year: "numeric",
-                        }).format(new Date(order?.car?.firstRegistration))}
-                      </Typography>
-                      <Typography variant="body1">{order.name}</Typography>
-                      <Typography variant="body1">{order.phone}</Typography>
-                      <Typography variant="body1">
-                        {new Intl.DateTimeFormat("uk-UA", {
-                          day: "2-digit",
-                          month: "short",
-                          year: "numeric",
-                        }).format(new Date(order.createdAt))}
-                      </Typography>
-                      <Typography variant="body1">
-                        {new Intl.NumberFormat("de-DE", {
-                          style: "currency",
-                          currency: "EUR",
-                          minimumFractionDigits: 0,
-                          maximumFractionDigits: 0,
-                        }).format(order?.car?.price)}
-                      </Typography>
-                    </Box>
-                  </Grid>
-                </Grid>
-              </ListItemButton>
-            </ListItem>
+                </ListItemButton>
+              </ListItem>
+            </Link>
           );
         })}
       </List>

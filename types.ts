@@ -41,10 +41,11 @@ export type Order = {
   id: number;
   name: string;
   phone: string;
-  info_method: string;
+  infoMethod: string;
   contact: string;
-  country_of_exploitation: string;
+  countryOfExploitation: string;
   carID: number;
+  status: string;
   createdAt: string;
   car: Car;
 };
