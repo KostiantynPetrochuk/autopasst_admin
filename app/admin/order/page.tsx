@@ -10,7 +10,7 @@ import Fab from "@mui/material/Fab";
 import AddIcon from "@mui/icons-material/Add";
 import { useAppDispatch, useAppSelector, useFetchWithAuth } from "@/hooks";
 
-import { AdminHeader, Loading, Message } from "@/components";
+import { AdminHeader, AppTitle, Loading, Message } from "@/components";
 import { selectOrders, setOrders } from "@/store/features/orders/ordersSlice";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
@@ -186,18 +186,7 @@ const OrderPage = () => {
             component="div"
             sx={{ display: "flex", flexDirection: "column", marginBottom: 2 }}
           >
-            <Paper
-              sx={{
-                padding: 2,
-                textAlign: "center",
-                marginTop: 2,
-              }}
-              elevation={24}
-            >
-              <Typography variant="h5" component="h2">
-                Замовлення
-              </Typography>
-            </Paper>
+            <AppTitle title="Замовлення" />
             <Box
               component="div"
               sx={{

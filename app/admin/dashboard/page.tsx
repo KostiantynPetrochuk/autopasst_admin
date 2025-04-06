@@ -13,6 +13,7 @@ import ListItemText from "@mui/material/ListItemText";
 import BusinessIcon from "@mui/icons-material/Business";
 import DirectionsCarIcon from "@mui/icons-material/DirectionsCar";
 import AssignmentIcon from "@mui/icons-material/Assignment";
+import { AppTitle } from "@/components";
 
 import { AdminHeader } from "@/components";
 
@@ -26,18 +27,7 @@ const DashboardPage = () => {
             component="div"
             sx={{ display: "flex", flexDirection: "column" }}
           >
-            <Paper
-              sx={{
-                padding: 2,
-                textAlign: "center",
-                marginTop: 2,
-              }}
-              elevation={24}
-            >
-              <Typography variant="h5" component="h2">
-                Домашня сторінка
-              </Typography>
-            </Paper>
+            <AppTitle title="Домашня сторінка" />
             <Box
               component="div"
               sx={{

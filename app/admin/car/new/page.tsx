@@ -30,7 +30,7 @@ import {
 } from "date-fns";
 import { useFetchWithAuth } from "@/hooks";
 
-import { AdminHeader, Loading, Message } from "@/components";
+import { AdminHeader, AppTitle, Loading, Message } from "@/components";
 import { useAppSelector, useAppDispatch } from "@/hooks";
 import { selectBrands, setBrands } from "@/store/features/brands/brandsSlice";
 
@@ -445,18 +445,7 @@ const NewCarPage = () => {
             component="div"
             sx={{ display: "flex", flexDirection: "column" }}
           >
-            <Paper
-              sx={{
-                padding: 2,
-                textAlign: "center",
-                marginTop: 2,
-              }}
-              elevation={24}
-            >
-              <Typography variant="h5" component="h2">
-                Новий автомобіль
-              </Typography>
-            </Paper>
+            <AppTitle title="Новий автомобіль" />
             {/* Grid for form inputs */}
             <Paper
               sx={{

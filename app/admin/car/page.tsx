@@ -8,10 +8,9 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import Fab from "@mui/material/Fab";
 import AddIcon from "@mui/icons-material/Add";
-import { format } from "date-fns";
 import { useAppDispatch, useAppSelector, useFetchWithAuth } from "@/hooks";
 
-import { AdminHeader, Loading, Message } from "@/components";
+import { AdminHeader, AppTitle, Loading, Message } from "@/components";
 import { setBrands } from "@/store/features/brands/brandsSlice";
 import { selectCars, setCars } from "@/store/features/cars/carsSlice";
 import List from "@mui/material/List";
@@ -213,18 +212,7 @@ const CarPage = () => {
             component="div"
             sx={{ display: "flex", flexDirection: "column", marginBottom: 2 }}
           >
-            <Paper
-              sx={{
-                padding: 2,
-                textAlign: "center",
-                marginTop: 2,
-              }}
-              elevation={24}
-            >
-              <Typography variant="h5" component="h2">
-                Автомобілі
-              </Typography>
-            </Paper>
+            <AppTitle title="Автомобілі" />
             <Box
               component="div"
               sx={{

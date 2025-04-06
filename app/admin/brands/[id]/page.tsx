@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import Image from "next/image";
-import { AdminHeader } from "@/components";
+import { AdminHeader, AppTitle } from "@/components";
 import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
@@ -219,18 +219,7 @@ const BrandPage = ({ params }: { params: { id: string } }) => {
             component="div"
             sx={{ display: "flex", flexDirection: "column" }}
           >
-            <Paper
-              sx={{
-                padding: 2,
-                textAlign: "center",
-                marginTop: 2,
-              }}
-              elevation={24}
-            >
-              <Typography variant="h5" component="h2">
-                {brand?.brandName}
-              </Typography>
-            </Paper>
+            <AppTitle title={brand?.brandName} />
           </Box>
           <Box
             component="div"
