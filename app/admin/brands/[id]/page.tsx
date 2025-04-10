@@ -293,6 +293,7 @@ const BrandPage = ({ params }: { params: { id: string } }) => {
                 modelName={modelName}
                 setModelName={setModelName}
                 handleSave={handleEdit}
+                title={"Редагувати модель"}
               />
             </Paper>
             <Fab
@@ -311,6 +312,7 @@ const BrandPage = ({ params }: { params: { id: string } }) => {
               modelName={modelName}
               setModelName={setModelName}
               handleSave={handleSave}
+              title={"Нова модель"}
             />
           </Box>
         </Box>

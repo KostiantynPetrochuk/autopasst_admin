@@ -16,7 +16,7 @@ const OrderPage = ({ params }: { params: { id: string } }) => {
   const session = useSession();
   const { fetchWithAuth } = useFetchWithAuth();
   const [order, setOrder] = useState<Order>();
-
+  const [selectedStatus, setSelectedStatus] = useState(order?.status || "new");
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState({
     open: false,
@@ -27,6 +27,9 @@ const OrderPage = ({ params }: { params: { id: string } }) => {
     vertical: "top",
     horizontal: "center",
   });
+
+  const handleSetOrder = (order: Order) => setOrder(order);
+  const handleSetSelectedStatus = (status: string) => setSelectedStatus(status);
 
   useEffect(() => {
     const getData = async () => {
@@ -82,7 +85,12 @@ const OrderPage = ({ params }: { params: { id: string } }) => {
               <CarSwiper car={order?.car} />
               <MainCharacteristics car={order?.car} />
               <Specification car={order?.car} />
-              <OrderInfo order={order} />
+              <OrderInfo
+                order={order}
+                handleSetOrder={handleSetOrder}
+                selectedStatus={selectedStatus}
+                handleSetSelectedStatus={handleSetSelectedStatus}
+              />
             </Box>
           </Box>
         </Container>

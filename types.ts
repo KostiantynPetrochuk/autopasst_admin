@@ -47,5 +47,6 @@ export type Order = {
   carID: number;
   status: string;
   createdAt: string;
+  cancellationReason?: string;
   car: Car;
 };

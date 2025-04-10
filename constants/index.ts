@@ -70,3 +70,10 @@ export const LABELS = {
     damaged: { en: "damaged", ua: "пошкоджений" },
   },
 };
+
+export const ORDER_STATUSES = {
+  new: "Нове замовлення",
+  canceled: "Скасовано",
+  confirmed: "Підтверджено",
+  completed: "Виконано",
+};

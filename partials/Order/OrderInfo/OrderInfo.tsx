@@ -3,19 +3,33 @@ import Image from "next/image";
 import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
+import DoDisturbIcon from "@mui/icons-material/DoDisturb";
 import Grid from "@mui/material/Grid";
 import { useTheme } from "@mui/material/styles";
 import { Order } from "@/types";
+import OrderStatus from "../OrderStatus";
+import { ORDER_STATUSES } from "@/constants";
 
 const OPTIONS = {
-  email: "/img/email.svg",
+  email: "/img/gmail.svg",
   telegram: "/img/telegram.svg",
   viber: "/img/viber.svg",
-  whatsApp: "/img/whatsapp.svg",
+  whatsapp: "/img/whatsApp.svg",
 };
 
-const OrderInfo = ({ order }: { order: Order }) => {
+type OrderInfoPropTypes = {
+  order: Order;
+  handleSetOrder: (order: Order) => void;
+  selectedStatus: string;
+  handleSetSelectedStatus: (status: string) => void;
+};
+
+const OrderInfo = ({
+  order,
+  handleSetOrder,
+  selectedStatus,
+  handleSetSelectedStatus,
+}: OrderInfoPropTypes) => {
   const theme = useTheme();
 
   return (
@@ -52,6 +66,7 @@ const OrderInfo = ({ order }: { order: Order }) => {
                 sx={{
                   display: "flex",
                   alignItems: "center",
+                  minHeight: "50px",
                 }}
               >
                 <Image
@@ -70,7 +85,7 @@ const OrderInfo = ({ order }: { order: Order }) => {
               </Box>
             </Box>
           </Grid>
-          <Grid item xs={12} sm={6} md={4} key={1}>
+          <Grid item xs={12} sm={6} md={4} key={2}>
             <Box
               sx={{
                 display: "flex",
@@ -85,6 +100,7 @@ const OrderInfo = ({ order }: { order: Order }) => {
                 sx={{
                   display: "flex",
                   alignItems: "center",
+                  minHeight: "50px",
                 }}
               >
                 <Image
@@ -103,7 +119,7 @@ const OrderInfo = ({ order }: { order: Order }) => {
               </Box>
             </Box>
           </Grid>
-          <Grid item xs={12} sm={6} md={4} key={1}>
+          <Grid item xs={12} sm={6} md={4} key={3}>
             <Box
               sx={{
                 display: "flex",
@@ -118,6 +134,7 @@ const OrderInfo = ({ order }: { order: Order }) => {
                 sx={{
                   display: "flex",
                   alignItems: "center",
+                  minHeight: "50px",
                 }}
               >
                 <Image
@@ -136,7 +153,7 @@ const OrderInfo = ({ order }: { order: Order }) => {
               </Box>
             </Box>
           </Grid>
-          <Grid item xs={12} sm={6} md={4} key={1}>
+          <Grid item xs={12} sm={6} md={4} key={4}>
             <Box
               sx={{
                 display: "flex",
@@ -149,6 +166,7 @@ const OrderInfo = ({ order }: { order: Order }) => {
             >
               <Box
                 sx={{
+                  minHeight: "50px",
                   display: "flex",
                   alignItems: "center",
                 }}
@@ -169,7 +187,7 @@ const OrderInfo = ({ order }: { order: Order }) => {
               </Box>
             </Box>
           </Grid>
-          <Grid item xs={12} sm={6} md={4} key={1}>
+          <Grid item xs={12} sm={6} md={4} key={5}>
             <Box
               sx={{
                 display: "flex",
@@ -184,6 +202,7 @@ const OrderInfo = ({ order }: { order: Order }) => {
                 sx={{
                   display: "flex",
                   alignItems: "center",
+                  minHeight: "50px",
                 }}
               >
                 <Image
@@ -206,7 +225,7 @@ const OrderInfo = ({ order }: { order: Order }) => {
               </Box>
             </Box>
           </Grid>
-          <Grid item xs={12} sm={6} md={4} key={1}>
+          <Grid item xs={12} sm={6} md={4} key={6}>
             <Box
               sx={{
                 display: "flex",
@@ -222,6 +241,7 @@ const OrderInfo = ({ order }: { order: Order }) => {
                 sx={{
                   display: "flex",
                   alignItems: "center",
+                  minHeight: "50px",
                 }}
               >
                 <Image
@@ -235,19 +255,86 @@ const OrderInfo = ({ order }: { order: Order }) => {
                   }}
                 />
                 <Typography variant="body2" color="textSecondary">
-                  {order?.status}
+                  {ORDER_STATUSES[order?.status as keyof typeof ORDER_STATUSES]}
                 </Typography>
               </Box>
-              <Button
-                variant="contained"
-                // endIcon={<PictureAsPdfIcon />}
-                component="label"
-                // onClick={}
-              >
-                Змінити
-              </Button>
+              <OrderStatus
+                order={order}
+                handleSetOrder={handleSetOrder}
+                selectedStatus={selectedStatus}
+                handleSetSelectedStatus={handleSetSelectedStatus}
+              />
             </Box>
           </Grid>
+          <Grid item xs={12} sm={6} md={4} key={7}>
+            <Box
+              sx={{
+                minHeight: "50px",
+                display: "flex",
+                alignItems: "center",
+                padding: 2,
+                border: `1px solid ${theme.palette.divider}`,
+                borderRadius: 1,
+                gap: 2,
+              }}
+            >
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                }}
+              >
+                <strong
+                  style={{
+                    fontFamily: "Arial",
+                    marginRight: 2,
+                  }}
+                >
+                  Оновлено:
+                </strong>
+                <Typography variant="body2" color="textSecondary">
+                  {new Intl.DateTimeFormat("uk-UA", {
+                    day: "2-digit",
+                    month: "short",
+                    year: "numeric",
+                  }).format(new Date(order.createdAt))}
+                </Typography>
+              </Box>
+            </Box>
+          </Grid>
+          {order?.status === "canceled" ? (
+            <Grid item xs={12} sm={6} md={4} key={8}>
+              <Box
+                sx={{
+                  minHeight: "50px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  padding: 2,
+                  border: `1px solid ${theme.palette.divider}`,
+                  borderRadius: 1,
+                  gap: 2,
+                }}
+              >
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <DoDisturbIcon sx={{ marginRight: 2 }} />
+                  <Typography
+                    sx={{ textAlign: "center" }}
+                    variant="body2"
+                    color="textSecondary"
+                  >
+                    {order?.cancellationReason}
+                  </Typography>
+                </Box>
+              </Box>
+            </Grid>
+          ) : null}
         </Grid>
       </Box>
     </Paper>

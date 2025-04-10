@@ -15,14 +15,14 @@ export const brandsSlice = createSlice({
     addModelToBrand: (state, action) => {
       const { brandId, model } = action.payload;
       const brand = state.find((b) => b.id == brandId);
-      if (brand) {
+      if (brand && brand?.models?.length) {
         brand.models.push(model);
       }
     },
     changeModelName: (state, action) => {
       const { brandId, modelId, modelName } = action.payload;
       const brand = state.find((b) => b.id === brandId);
-      if (brand) {
+      if (brand && brand?.models?.length) {
         const model = brand.models.find((m) => m.id === modelId);
         if (model) {
           model.modelName = modelName;

@@ -12,6 +12,7 @@ const AddModelDialog = ({
   modelName,
   setModelName,
   handleSave,
+  title,
 }: any) => {
   return (
     <Dialog
@@ -20,9 +21,7 @@ const AddModelDialog = ({
       aria-labelledby="alert-dialog-title"
       aria-describedby="alert-dialog-description"
     >
-      <DialogTitle id="alert-dialog-title">
-        {modelName ? "Редагування" : "Нова модель"}
-      </DialogTitle>
+      <DialogTitle id="alert-dialog-title">{title}</DialogTitle>
       <DialogContent>
         <TextField
           sx={{ marginTop: "10px" }}
