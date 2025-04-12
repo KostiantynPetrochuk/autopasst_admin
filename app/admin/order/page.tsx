@@ -6,8 +6,8 @@ import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
-import Fab from "@mui/material/Fab";
-import AddIcon from "@mui/icons-material/Add";
+// import Fab from "@mui/material/Fab";
+// import AddIcon from "@mui/icons-material/Add";
 import { useAppDispatch, useAppSelector, useFetchWithAuth } from "@/hooks";
 
 import { AdminHeader, AppTitle, Loading, Message } from "@/components";
@@ -16,12 +16,23 @@ import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import SentimentDissatisfiedIcon from "@mui/icons-material/SentimentDissatisfied";
+import Button from "@mui/material/Button";
+import FormControl from "@mui/material/FormControl";
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import Select from "@mui/material/Select";
+import BackspaceIcon from "@mui/icons-material/Backspace";
+import { DateCalendar } from "@mui/x-date-pickers/DateCalendar";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Switch from "@mui/material/Switch";
+import TextField from "@mui/material/TextField";
 
 import Grid from "@mui/material/Grid";
 import { useSession } from "next-auth/react";
 import { Order } from "@/types";
 import Pagination from "@mui/material/Pagination";
 import { BACKEND_URL } from "@/lib/Constants";
+import { ORDER_STATUSES } from "@/constants";
 
 const LIMIT = 5;
 
@@ -32,6 +43,7 @@ const OrderPage = () => {
   const [loading, setLoading] = useState(true);
   const [totalPages, setTotalPages] = useState(0);
   const [page, setPage] = useState(1);
+  const [selectedStatus, setSelectedStatus] = useState<string>("0");
   const orders = useAppSelector(selectOrders);
   const [message, setMessage] = useState({
     open: false,
@@ -42,18 +54,45 @@ const OrderPage = () => {
     vertical: "top",
     horizontal: "center",
   });
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+  const [selectedCountryOfExploitation, setSelectedCountryOfExploitation] =
+    useState<string>("");
+  const [byDate, setByDate] = useState<boolean>(true);
+  const [inputCountry, setInputCountry] = useState("");
+
+  const handleChangeDate = (date: Date) => setSelectedDate(date);
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setSelectedCountryOfExploitation(inputCountry);
+      setPage(1);
+    }, 1000);
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [inputCountry]);
 
   useEffect(() => {
     const getData = async () => {
       if (session.status === "authenticated") {
         setLoading(true);
         try {
-          const { data, error } = await fetchWithAuth(
-            `/orders?offset=0&limit=${LIMIT}`,
-            {
-              method: "GET",
-            }
-          );
+          const dateString = selectedDate.toISOString();
+          const params = new URLSearchParams({
+            status: selectedStatus !== "0" ? selectedStatus : "",
+            offset: String((page - 1) * LIMIT),
+            limit: String(LIMIT),
+            countryOfExploitation:
+              selectedCountryOfExploitation !== "0"
+                ? selectedCountryOfExploitation
+                : "",
+            createdAt: byDate ? dateString : "",
+          });
+          const url = `/orders?${params.toString()}`;
+          const { data, error } = await fetchWithAuth(url, {
+            method: "GET",
+          });
           if (error) {
             setMessage((prev) => ({
               ...prev,
@@ -74,7 +113,14 @@ const OrderPage = () => {
     if (session.status === "authenticated") {
       getData();
     }
-  }, [session, page]);
+  }, [
+    session,
+    page,
+    selectedStatus,
+    selectedCountryOfExploitation,
+    byDate,
+    selectedDate,
+  ]);
 
   let listContent = null;
 
@@ -187,15 +233,109 @@ const OrderPage = () => {
             sx={{ display: "flex", flexDirection: "column", marginBottom: 2 }}
           >
             <AppTitle title="Замовлення" />
-            <Box
-              component="div"
+            <Paper
               sx={{
-                display: "flex",
-                justifyContent: "center",
-                flexDirection: "column",
-                alignItems: "center",
+                padding: 2,
+                textAlign: "center",
+                marginTop: 2,
               }}
+              elevation={24}
             >
+              <DateCalendar
+                disabled={!byDate}
+                value={selectedDate}
+                showDaysOutsideCurrentMonth
+                fixedWeekNumber={6}
+                onChange={handleChangeDate}
+              />
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={byDate}
+                    onChange={(event: any) => setByDate(event.target.checked)}
+                    name="byDate"
+                    color="primary"
+                  />
+                }
+                label="за датою"
+              />
+            </Paper>
+            <Paper
+              sx={{
+                padding: 2,
+                textAlign: "center",
+                marginTop: 2,
+                display: "grid",
+                gridTemplateColumns: {
+                  xs: "1fr",
+                  sm: "1fr 1fr",
+                },
+                gap: 2,
+              }}
+              elevation={24}
+            >
+              <FormControl fullWidth>
+                <InputLabel id="demo-simple-select-label">Статус</InputLabel>
+                <Select
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  value={selectedStatus}
+                  label="Статус"
+                  onChange={(event) => {
+                    const value = event.target.value;
+                    setSelectedStatus(value);
+                    setPage(1);
+                  }}
+                >
+                  <MenuItem key={0} value={"0"}>
+                    Всі замовлення
+                  </MenuItem>
+                  {Object.keys(ORDER_STATUSES).map((key) => {
+                    const statusKey = key as keyof typeof ORDER_STATUSES;
+                    return (
+                      <MenuItem key={statusKey} value={statusKey}>
+                        {ORDER_STATUSES[statusKey]}
+                      </MenuItem>
+                    );
+                  })}
+                </Select>
+              </FormControl>
+              <FormControl fullWidth>
+                <TextField
+                  id="status-input"
+                  value={inputCountry}
+                  label="Країна експлуатації"
+                  onChange={(event) => {
+                    const value = event.target.value;
+                    setInputCountry(value);
+                    setPage(1);
+                  }}
+                />
+              </FormControl>
+            </Paper>
+            <Paper
+              sx={{
+                padding: 2,
+                textAlign: "center",
+                marginTop: 2,
+                marginBottom: 2,
+              }}
+              elevation={24}
+            >
+              <Button
+                variant="contained"
+                startIcon={<BackspaceIcon />}
+                sx={{ flex: "1 1 auto", minWidth: "120px" }}
+                onClick={() => {
+                  setSelectedStatus("0");
+                  setPage(1);
+                }}
+              >
+                Очистити
+              </Button>
+            </Paper>
+
+            <Box component="div" sx={{ width: "100%" }}>
               <Paper
                 sx={{
                   padding: 2,
@@ -218,12 +358,13 @@ const OrderPage = () => {
                   />
                 ) : null}
               </Paper>
-
-              <Link href={"/admin/car/new"}>
-                <Fab color="primary" aria-label="add">
-                  <AddIcon />
-                </Fab>
-              </Link>
+              {/* <Box display={"flex"} justifyContent={"center"}>
+                <Link href={"/admin/car/new"}>
+                  <Fab color="primary" aria-label="add">
+                    <AddIcon />
+                  </Fab>
+                </Link>
+              </Box> */}
             </Box>
           </Box>
         </Box>
