@@ -43,7 +43,7 @@ const OrderPage = () => {
   const [loading, setLoading] = useState(true);
   const [totalPages, setTotalPages] = useState(0);
   const [page, setPage] = useState(1);
-  const [selectedStatus, setSelectedStatus] = useState<string>("0");
+  const [selectedStatus, setSelectedStatus] = useState<string>("new");
   const orders = useAppSelector(selectOrders);
   const [message, setMessage] = useState({
     open: false,
