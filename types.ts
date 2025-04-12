@@ -5,7 +5,7 @@ export type Model = {
 };
 
 export type Brand = {
-  id: string;
+  id: number;
   brandName: string;
   fileName: string;
   models?: Model[];

@@ -29,7 +29,7 @@ export const overviewData: OverviewDataItem[] = [
     translate: true,
   },
   {
-    label: "Коробка передач:",
+    label: "КПП:",
     value: "transmission",
     translate: true,
   },
