@@ -28,7 +28,7 @@ import Switch from "@mui/material/Switch";
 import TextField from "@mui/material/TextField";
 
 import Grid from "@mui/material/Grid";
-import { useSession } from "next-auth/react";
+import { useSession, signOut } from "next-auth/react";
 import { Order } from "@/types";
 import Pagination from "@mui/material/Pagination";
 import { BACKEND_URL } from "@/lib/Constants";
@@ -112,6 +112,15 @@ const OrderPage = () => {
     };
     if (session.status === "authenticated") {
       getData();
+    }
+    if (session.status === "authenticated") {
+      const sessionWithError = session.data as typeof session.data & {
+        error?: string;
+      };
+
+      if (sessionWithError?.error === "RefreshAccessTokenError") {
+        signOut({ callbackUrl: "/signin" });
+      }
     }
   }, [
     session,

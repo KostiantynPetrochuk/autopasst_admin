@@ -17,8 +17,8 @@ import { Loading, Message } from "@/components";
 import { useFetchWithAuth } from "@/hooks";
 import { AddBrandDialog } from "@/partials/Brands";
 import { Brand } from "@/types";
-import { useSession } from "next-auth/react";
-import { BACKEND_URL } from "@/lib/Constants";
+import { useSession, signOut } from "next-auth/react";
+import { STATIC_URL } from "@/lib/Constants";
 
 const AddBrand = ({ open, setOpen }: any) => {
   const session = useSession();
@@ -90,6 +90,7 @@ const AddBrand = ({ open, setOpen }: any) => {
         setLoading(false);
         return;
       }
+      data.models = [];
 
       dispatch(setBrands([...brands, data.brand]));
       setBrandName("");
@@ -138,7 +139,15 @@ const AddBrand = ({ open, setOpen }: any) => {
       dispatch(setBrands(data.brands));
       setLoading(false);
     };
+    if (session.status === "authenticated") {
+      const sessionWithError = session.data as typeof session.data & {
+        error?: string;
+      };
 
+      if (sessionWithError?.error === "RefreshAccessTokenError") {
+        signOut({ callbackUrl: "/signin" });
+      }
+    }
     if (session.status === "authenticated") {
       fetchData();
     }
@@ -166,7 +175,7 @@ const AddBrand = ({ open, setOpen }: any) => {
                         <ListItemButton>
                           <ListItemIcon>
                             <Image
-                              src={`${BACKEND_URL}/uploads/brands/${brand.fileName}`}
+                              src={`${STATIC_URL}/brands/${brand.fileName}`}
                               alt="brand_logo"
                               height={50}
                               width={50}

@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { useSession } from "next-auth/react";
+import { useSession, signOut } from "next-auth/react";
 import { redirect } from "next/navigation";
 import { AdminHeader } from "@/components";
 import Container from "@mui/material/Container";
@@ -57,6 +57,15 @@ const OrderPage = ({ params }: { params: { id: string } }) => {
     };
     if (session.status === "authenticated") {
       getData();
+    }
+    if (session.status === "authenticated") {
+      const sessionWithError = session.data as typeof session.data & {
+        error?: string;
+      };
+
+      if (sessionWithError?.error === "RefreshAccessTokenError") {
+        signOut({ callbackUrl: "/signin" });
+      }
     }
   }, [session]);
 

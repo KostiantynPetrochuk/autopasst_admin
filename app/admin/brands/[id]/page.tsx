@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { useSession } from "next-auth/react";
+import { useSession, signOut } from "next-auth/react";
 import Link from "next/link";
 import Image from "next/image";
 import { AdminHeader, AppTitle } from "@/components";
@@ -27,7 +27,7 @@ import {
   changeModelName,
 } from "@/store/features/brands/brandsSlice";
 import { Message, Loading } from "@/components";
-import { BACKEND_URL } from "@/lib/Constants";
+import { STATIC_URL } from "@/lib/Constants";
 
 const BrandPage = ({ params }: { params: { id: string } }) => {
   const session = useSession();
@@ -38,7 +38,7 @@ const BrandPage = ({ params }: { params: { id: string } }) => {
   const [modelName, setModelName] = useState<string>("");
   const [modelId, setModelId] = useState<number>();
   const brands = useAppSelector(selectBrands);
-  const brand = brands.find((brand) => brand.id == params.id);
+  const brand = brands.find((brand) => brand.id === Number(params.id));
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState({
     open: false,
@@ -207,6 +207,15 @@ const BrandPage = ({ params }: { params: { id: string } }) => {
     if (!brands.length && session.status === "authenticated") {
       getBrands();
     }
+    if (session.status === "authenticated") {
+      const sessionWithError = session.data as typeof session.data & {
+        error?: string;
+      };
+
+      if (sessionWithError?.error === "RefreshAccessTokenError") {
+        signOut({ callbackUrl: "/signin" });
+      }
+    }
   }, [session]);
 
   let content = null;
@@ -236,7 +245,7 @@ const BrandPage = ({ params }: { params: { id: string } }) => {
               elevation={24}
             >
               <Image
-                src={`${BACKEND_URL}/uploads/brands/${brand?.fileName}`}
+                src={`${STATIC_URL}/brands/${brand?.fileName}`}
                 alt="brand_logo"
                 height={50}
                 width={50}

@@ -43,7 +43,7 @@ import {
   TRANSMISSION,
 } from "@/constants";
 
-import { useSession } from "next-auth/react";
+import { useSession, signOut } from "next-auth/react";
 
 const NewCarPage = () => {
   const session = useSession();
@@ -422,6 +422,15 @@ const NewCarPage = () => {
     if (session.status === "authenticated") {
       getBrands();
     }
+    if (session.status === "authenticated") {
+      const sessionWithError = session.data as typeof session.data & {
+        error?: string;
+      };
+
+      if (sessionWithError?.error === "RefreshAccessTokenError") {
+        signOut({ callbackUrl: "/signin" });
+      }
+    }
   }, [session]);
 
   const currentBrand = brands.find(
@@ -475,7 +484,7 @@ const NewCarPage = () => {
                       labelId="demo-simple-select-label"
                       id="demo-simple-select"
                       label="Бренд"
-                      value={form.brandId}
+                      value={String(form.brandId)}
                       onChange={handleChange}
                       name="brandId"
                       error={errors.brandId}

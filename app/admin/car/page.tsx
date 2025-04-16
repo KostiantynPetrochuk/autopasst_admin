@@ -24,7 +24,7 @@ import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
 
 import Grid from "@mui/material/Grid";
-import { useSession } from "next-auth/react";
+import { useSession, signOut } from "next-auth/react";
 import { BODY_TYPES, CONDITION, FUEL_TYPES, TRANSMISSION } from "@/constants";
 import { Car } from "@/types";
 import Pagination from "@mui/material/Pagination";
@@ -127,6 +127,15 @@ const CarPage = () => {
     };
     if (session.status === "authenticated") {
       getData();
+    }
+    if (session.status === "authenticated") {
+      const sessionWithError = session.data as typeof session.data & {
+        error?: string;
+      };
+
+      if (sessionWithError?.error === "RefreshAccessTokenError") {
+        signOut({ callbackUrl: "/signin" });
+      }
     }
   }, [
     session,
