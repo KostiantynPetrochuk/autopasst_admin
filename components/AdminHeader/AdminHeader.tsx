@@ -10,6 +10,7 @@ import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import DirectionsCarIcon from "@mui/icons-material/DirectionsCar";
+import CarRentalIcon from "@mui/icons-material/CarRental";
 
 import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
@@ -149,6 +150,16 @@ function AdminDrawer({
                   <AssignmentIcon />
                 </ListItemIcon>
                 <ListItemText primary="Замовлення" />
+              </ListItemButton>
+            </ListItem>
+          </Link>
+          <Link href="/admin/car-selection">
+            <ListItem key={5} disablePadding>
+              <ListItemButton>
+                <ListItemIcon>
+                  <CarRentalIcon />
+                </ListItemIcon>
+                <ListItemText primary="Заявки на підбір" />
               </ListItemButton>
             </ListItem>
           </Link>

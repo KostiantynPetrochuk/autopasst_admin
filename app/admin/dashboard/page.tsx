@@ -13,6 +13,7 @@ import ListItemText from "@mui/material/ListItemText";
 import BusinessIcon from "@mui/icons-material/Business";
 import DirectionsCarIcon from "@mui/icons-material/DirectionsCar";
 import AssignmentIcon from "@mui/icons-material/Assignment";
+import CarRentalIcon from "@mui/icons-material/CarRental";
 import { AppTitle } from "@/components";
 
 import { AdminHeader } from "@/components";
@@ -74,6 +75,16 @@ const DashboardPage = () => {
                         <AssignmentIcon />
                       </ListItemIcon>
                       <ListItemText primary="Замовлення" />
+                    </ListItemButton>
+                  </ListItem>
+                </Link>
+                <Link href="/admin/car-selection">
+                  <ListItem key={5} disablePadding>
+                    <ListItemButton>
+                      <ListItemIcon>
+                        <CarRentalIcon />
+                      </ListItemIcon>
+                      <ListItemText primary="Заявки на підбір" />
                     </ListItemButton>
                   </ListItem>
                 </Link>

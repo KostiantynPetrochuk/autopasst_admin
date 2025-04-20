@@ -77,3 +77,8 @@ export const ORDER_STATUSES = {
   confirmed: "Підтверджено",
   completed: "Виконано",
 };
+
+export const CAR_SELECTION_STATUSES = {
+  new: "Нова заявка",
+  processed: "Опрацьована",
+};
