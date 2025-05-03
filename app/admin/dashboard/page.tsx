@@ -1,7 +1,8 @@
+"use client";
+import { signOut } from "next-auth/react";
 import Link from "next/link";
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
-import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import Button from "@mui/material/Button";
 import LogoutIcon from "@mui/icons-material/Logout";
@@ -14,6 +15,7 @@ import BusinessIcon from "@mui/icons-material/Business";
 import DirectionsCarIcon from "@mui/icons-material/DirectionsCar";
 import AssignmentIcon from "@mui/icons-material/Assignment";
 import CarRentalIcon from "@mui/icons-material/CarRental";
+import CarRepairIcon from "@mui/icons-material/CarRepair";
 import { AppTitle } from "@/components";
 
 import { AdminHeader } from "@/components";
@@ -88,10 +90,22 @@ const DashboardPage = () => {
                     </ListItemButton>
                   </ListItem>
                 </Link>
+                <Link href="/admin/sell-car-request">
+                  <ListItem key={6} disablePadding>
+                    <ListItemButton>
+                      <ListItemIcon>
+                        <CarRepairIcon />
+                      </ListItemIcon>
+                      <ListItemText primary="Заявки на продаж" />
+                    </ListItemButton>
+                  </ListItem>
+                </Link>
                 <Button
                   variant="contained"
                   sx={{ marginTop: "12px", width: 100 }}
-                  // onClick={signOut}
+                  onClick={() => {
+                    signOut({ callbackUrl: "/signin" });
+                  }}
                   endIcon={<LogoutIcon />}
                 >
                   Вихід

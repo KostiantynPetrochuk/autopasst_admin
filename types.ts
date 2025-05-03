@@ -67,3 +67,21 @@ export type CarSelection = {
   createdAt: string;
   updatedAt: string;
 };
+
+export type SellCarRequest = {
+  id: number;
+  brand: string;
+  model: string;
+  year: string;
+  mileage: string;
+  price: string;
+  name: string;
+  phone: string;
+  infoMethod: string;
+  contact: string;
+  countryOfExploitation: string;
+  status: string;
+  imageNames: string[];
+  createdAt: string;
+  updatedAt: string;
+};

@@ -3,6 +3,7 @@ import brandsReducer from "@/store/features/brands/brandsSlice";
 import carsReducer from "@/store/features/cars/carsSlice";
 import ordersReducer from "@/store/features/orders/ordersSlice";
 import carSelectionsReducer from "@/store/features/carSelections/carSelectionsSlice";
+import sellCarRequestsReducer from "@/store/features/sellCarRequests/sellCarRequestsSlice";
 
 export const store = configureStore({
   reducer: {
@@ -10,6 +11,7 @@ export const store = configureStore({
     cars: carsReducer,
     orders: ordersReducer,
     carSelections: carSelectionsReducer,
+    sellCarRequests: sellCarRequestsReducer,
   },
 });
 

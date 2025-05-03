@@ -7,7 +7,6 @@ import Container from "@mui/material/Container";
 import { useAppDispatch, useAppSelector, useFetchWithAuth } from "@/hooks";
 
 import { AdminHeader, AppTitle, Loading, Message } from "@/components";
-import List from "@mui/material/List";
 import SentimentDissatisfiedIcon from "@mui/icons-material/SentimentDissatisfied";
 import Button from "@mui/material/Button";
 import FormControl from "@mui/material/FormControl";
@@ -19,20 +18,39 @@ import { DateCalendar } from "@mui/x-date-pickers/DateCalendar";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Switch from "@mui/material/Switch";
 import TextField from "@mui/material/TextField";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import ListItemButton from "@mui/material/ListItemButton";
+import Grid from "@mui/material/Grid";
+import Badge from "@mui/material/Badge";
 
 import { useSession, signOut } from "next-auth/react";
-import { CarSelection } from "@/types";
+import { SellCarRequest } from "@/types";
 import Pagination from "@mui/material/Pagination";
 import { CAR_SELECTION_STATUSES } from "@/constants";
 import {
-  selectCarSelections,
-  setCarSelections,
-} from "@/store/features/carSelections/carSelectionsSlice";
-import CarSelectionItem from "@/partials/CarSelection/CarSelectionItem";
+  selectSellCarRequests,
+  setSellCarRequests,
+} from "@/store/features/sellCarRequests/sellCarRequestsSlice";
+import SellCarRequestItem from "@/partials/SellCarRequest/SellCarRequestItem";
+
+const statusColorMap: Record<
+  string,
+  "default" | "primary" | "secondary" | "error" | "info" | "success" | "warning"
+> = {
+  new: "primary",
+  processed: "success",
+  //
+  // active: "primary",
+  // done: "success",
+  // error: "error",
+  // waiting: "warning",
+  // default: "default",
+};
 
 const LIMIT = 5;
-
-const CarSelectionsPage = () => {
+// carSelection  -> delete
+const SellCarRequestPage = () => {
   const session = useSession();
   const dispatch = useAppDispatch();
   const { fetchWithAuth } = useFetchWithAuth();
@@ -40,7 +58,8 @@ const CarSelectionsPage = () => {
   const [totalPages, setTotalPages] = useState(0);
   const [page, setPage] = useState(1);
   const [selectedStatus, setSelectedStatus] = useState<string>("new");
-  const carSelections = useAppSelector(selectCarSelections);
+  const sellCarRequests = useAppSelector(selectSellCarRequests);
+  console.log({ sellCarRequests });
   const [message, setMessage] = useState({
     open: false,
     severity: "error",
@@ -85,7 +104,7 @@ const CarSelectionsPage = () => {
                 : "",
             createdAt: byDate ? dateString : "",
           });
-          const url = `/car-selection?${params.toString()}`;
+          const url = `/sell-car-request?${params.toString()}`;
           const { data, error } = await fetchWithAuth(url, {
             method: "GET",
           });
@@ -97,7 +116,7 @@ const CarSelectionsPage = () => {
               text: "Помилка завантаження замовлень.",
             }));
           }
-          dispatch(setCarSelections(data.carSelections));
+          dispatch(setSellCarRequests(data.sellCarRequests));
           setTotalPages(Math.ceil(data.total / LIMIT));
         } catch (error) {
           console.error("Error fetching data:", error);
@@ -139,28 +158,26 @@ const CarSelectionsPage = () => {
     );
   }
 
-  if (!loading && !carSelections?.length) {
+  if (!loading && !sellCarRequests?.length) {
     listContent = (
       <Box sx={{ textAlign: "center", padding: 4 }}>
         <SentimentDissatisfiedIcon sx={{ fontSize: 60, color: "grey.500" }} />
         <Typography variant="h6" sx={{ marginTop: 2 }}>
-          Поки нема доступних замовлень.
+          Поки нема заявок на продаж.
         </Typography>
       </Box>
     );
   }
 
-  if (carSelections?.length) {
+  if (sellCarRequests?.length) {
     listContent = (
       <List>
-        {carSelections.map((carSelection: CarSelection) => {
-          return (
-            <CarSelectionItem
-              key={carSelection.id}
-              carSelection={carSelection}
-            />
-          );
-        })}
+        {sellCarRequests.map((sellCarRequest: SellCarRequest) => (
+          <SellCarRequestItem
+            key={sellCarRequest?.id}
+            sellCarRequest={sellCarRequest}
+          />
+        ))}
       </List>
     );
   }
@@ -176,7 +193,7 @@ const CarSelectionsPage = () => {
             component="div"
             sx={{ display: "flex", flexDirection: "column", marginBottom: 2 }}
           >
-            <AppTitle title="Заявки на підбір" />
+            <AppTitle title="Заявки на продаж" />
             <Paper
               sx={{
                 padding: 2,
@@ -232,7 +249,7 @@ const CarSelectionsPage = () => {
                   }}
                 >
                   <MenuItem key={0} value={"0"}>
-                    Всі замовлення
+                    Всі заявки
                   </MenuItem>
                   {Object.keys(CAR_SELECTION_STATUSES).map((key) => {
                     const statusKey =
@@ -281,7 +298,6 @@ const CarSelectionsPage = () => {
             </Paper>
           </Box>
         </Box>
-
         <Box
           component="div"
           sx={{
@@ -292,7 +308,7 @@ const CarSelectionsPage = () => {
           }}
         >
           {listContent}
-          {carSelections?.length ? (
+          {sellCarRequests?.length ? (
             <Pagination
               sx={{
                 display: "flex",
@@ -309,4 +325,4 @@ const CarSelectionsPage = () => {
   );
 };
 
-export default CarSelectionsPage;
+export default SellCarRequestPage;

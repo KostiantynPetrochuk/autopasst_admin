@@ -4,34 +4,32 @@ import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
-import TextField from "@mui/material/TextField";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
-import { Order } from "@/types";
+import { SellCarRequest } from "@/types";
 import { useFetchWithAuth } from "@/hooks";
 import { Message, Loading } from "@/components";
-import { ORDER_STATUSES } from "@/constants";
+import { CAR_SELECTION_STATUSES } from "@/constants";
 
-type OrderStatusPropTypes = {
-  order: Order;
-  handleSetOrder: (order: Order) => void;
+type SellCarRequestStatusPropTypes = {
+  sellCarRequest: SellCarRequest;
+  handleSetSellCarRequest: (sellCarRequest: SellCarRequest) => void;
   selectedStatus: string;
   handleSetSelectedStatus: (status: string) => void;
 };
 
-type OrderStatusesKey = "new" | "canceled" | "confirmed" | "completed";
+type SellCarRequestStatusesKey = "new" | "processed";
 
-const OrderStatus = ({
-  order,
-  handleSetOrder,
+const SellCarRequestStatus = ({
+  sellCarRequest,
+  handleSetSellCarRequest,
   selectedStatus,
   handleSetSelectedStatus,
-}: OrderStatusPropTypes) => {
+}: SellCarRequestStatusPropTypes) => {
   const { fetchWithAuth } = useFetchWithAuth();
   const [open, setOpen] = useState(false);
-  const [cancelReason, setCancelReason] = useState("");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState({
     open: false,
@@ -45,33 +43,17 @@ const OrderStatus = ({
 
   const handleToggleDialog = () => {
     setOpen((prev) => !prev);
-    handleSetSelectedStatus(order?.status);
+    handleSetSelectedStatus(sellCarRequest?.status);
   };
 
   const handleConfirm = async () => {
     try {
       setLoading(true);
-      if (
-        selectedStatus === "canceled" &&
-        (!cancelReason.length || cancelReason.length < 3)
-      ) {
-        setMessage((prev) => ({
-          ...prev,
-          open: true,
-          severity: "warning",
-          text: "Будь ласка, вкажіть причину скасування.",
-        }));
-        return;
-      }
       const body = {
-        id: order?.id,
+        id: sellCarRequest?.id,
         status: selectedStatus,
-        cancelReason: "",
       };
-      if (selectedStatus === "canceled") {
-        body.cancelReason = cancelReason;
-      }
-      const { error } = await fetchWithAuth("/orders/status", {
+      const { error } = await fetchWithAuth("/sell-car-request/status", {
         method: "PATCH",
         body: JSON.stringify(body),
       });
@@ -80,30 +62,27 @@ const OrderStatus = ({
           ...prev,
           open: true,
           severity: "error",
-          text: "Не вдалось змінити статус замовлення.",
+          text: "Не вдалось змінити статус заявки.",
         }));
         return;
       }
-      const newOrder = { ...order };
-      newOrder.status = selectedStatus;
-      if (selectedStatus === "canceled") {
-        newOrder.cancellationReason = cancelReason;
-      }
-      handleSetOrder(newOrder);
+      const newSellCarRequest = { ...sellCarRequest };
+      newSellCarRequest.status = selectedStatus;
+      handleSetSellCarRequest(newSellCarRequest);
       handleToggleDialog();
     } catch (error) {
       setMessage((prev) => ({
         ...prev,
         open: true,
         severity: "error",
-        text: "Не вдалось змінити статус замовлення.",
+        text: "Не вдалось змінити статус заявки.",
       }));
     } finally {
       setLoading(false);
     }
   };
 
-  if (order?.status === "canceled" || order?.status === "completed") {
+  if (sellCarRequest?.status === "processed") {
     return null;
   }
 
@@ -116,7 +95,7 @@ const OrderStatus = ({
         component="label"
         onClick={handleToggleDialog}
       >
-        Змінити
+        Опрацювати
       </Button>
       <Dialog
         open={open}
@@ -126,7 +105,11 @@ const OrderStatus = ({
         fullWidth
       >
         <DialogTitle id="alert-dialog-title">
-          {ORDER_STATUSES[order?.status as OrderStatusesKey]}
+          {
+            CAR_SELECTION_STATUSES[
+              sellCarRequest?.status as SellCarRequestStatusesKey
+            ]
+          }
         </DialogTitle>
         <DialogContent>
           <FormControl fullWidth sx={{ marginTop: 1 }}>
@@ -144,47 +127,31 @@ const OrderStatus = ({
               name="status"
               error={false}
             >
-              {Object.keys(ORDER_STATUSES).map((key) => {
+              {Object.keys(CAR_SELECTION_STATUSES).map((key) => {
                 let isDisabled = true;
                 // new
-                if (order?.status === "new" && key === "confirmed") {
+                if (sellCarRequest?.status === "new") {
                   isDisabled = false;
                 }
-                if (order?.status === "new" && key === "canceled") {
-                  isDisabled = false;
-                }
-                // confirmed
-                if (order?.status === "confirmed" && key === "canceled") {
-                  isDisabled = false;
-                }
-                if (order?.status === "confirmed" && key === "completed") {
+                // processed
+                if (sellCarRequest?.status === "processed") {
                   isDisabled = false;
                 }
                 return (
                   <MenuItem disabled={isDisabled} key={key} value={key}>
-                    {ORDER_STATUSES[key as OrderStatusesKey]}
+                    {CAR_SELECTION_STATUSES[key as SellCarRequestStatusesKey]}
                   </MenuItem>
                 );
               })}
             </Select>
           </FormControl>
-          {selectedStatus === "canceled" ? (
-            <TextField
-              sx={{ marginTop: "10px", marginBottom: "20px", width: "100%" }}
-              id="cancel-reason"
-              label="Причина скасування"
-              variant="outlined"
-              value={cancelReason}
-              onChange={(e) => setCancelReason(e.target.value)}
-            />
-          ) : null}
         </DialogContent>
         <DialogActions>
           <Button onClick={handleToggleDialog}>Скасувати</Button>
           <Button
             onClick={handleConfirm}
             autoFocus
-            disabled={order?.status === selectedStatus}
+            disabled={sellCarRequest?.status === selectedStatus}
           >
             Зберегти
           </Button>
@@ -194,4 +161,4 @@ const OrderStatus = ({
   );
 };
 
-export default OrderStatus;
+export default SellCarRequestStatus;

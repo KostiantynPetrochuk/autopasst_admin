@@ -11,6 +11,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import DirectionsCarIcon from "@mui/icons-material/DirectionsCar";
 import CarRentalIcon from "@mui/icons-material/CarRental";
+import CarRepairIcon from '@mui/icons-material/CarRepair';
 
 import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
@@ -160,6 +161,16 @@ function AdminDrawer({
                   <CarRentalIcon />
                 </ListItemIcon>
                 <ListItemText primary="Заявки на підбір" />
+              </ListItemButton>
+            </ListItem>
+          </Link>
+          <Link href="/admin/sell-car-request">
+            <ListItem key={6} disablePadding>
+              <ListItemButton>
+                <ListItemIcon>
+                  <CarRepairIcon />
+                </ListItemIcon>
+                <ListItemText primary="Заявки на продаж" />
               </ListItemButton>
             </ListItem>
           </Link>

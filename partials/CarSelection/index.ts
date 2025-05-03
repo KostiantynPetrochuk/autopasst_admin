@@ -1,2 +1,2 @@
-export { default as OrderInfo } from "./OrderInfo";
 export { default as OrderStatus } from "./CarSelectionStatusButton";
+export { default as CarSelectionItem } from "./CarSelectionItem";
