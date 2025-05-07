@@ -26,6 +26,7 @@ const AddBrand = ({ open, setOpen }: any) => {
   const { fetchWithAuth } = useFetchWithAuth();
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [brandName, setBrandName] = useState<string>("");
+  const [imageFile, setImageFile] = useState<File | null>(null);
   const brands = useAppSelector(selectBrands);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState({
@@ -54,6 +55,7 @@ const AddBrand = ({ open, setOpen }: any) => {
     const file = event.target.files?.[0];
     if (file) {
       setSelectedImage(URL.createObjectURL(file));
+      setImageFile(file);
     }
   };
 
@@ -72,8 +74,8 @@ const AddBrand = ({ open, setOpen }: any) => {
     const formData = new FormData();
     formData.append("brand_name", brandName);
     const fileInput = document.querySelector<HTMLInputElement>("#image-upload");
-    if (fileInput && fileInput.files && fileInput.files[0]) {
-      formData.append("file", fileInput.files[0]);
+    if (imageFile) {
+      formData.append("file", imageFile);
     }
     try {
       const { data, error } = await fetchWithAuth("/brands", {
@@ -90,7 +92,7 @@ const AddBrand = ({ open, setOpen }: any) => {
         setLoading(false);
         return;
       }
-      data.models = [];
+      data.brand.models = [];
 
       dispatch(setBrands([...brands, data.brand]));
       setBrandName("");
