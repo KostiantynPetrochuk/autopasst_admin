@@ -26,6 +26,7 @@ import { DateCalendar } from "@mui/x-date-pickers/DateCalendar";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Switch from "@mui/material/Switch";
 import TextField from "@mui/material/TextField";
+import Badge from "@mui/material/Badge";
 
 import Grid from "@mui/material/Grid";
 import { useSession, signOut } from "next-auth/react";
@@ -35,6 +36,20 @@ import { BACKEND_URL } from "@/lib/Constants";
 import { ORDER_STATUSES } from "@/constants";
 
 const LIMIT = 5;
+
+const statusColorMap: Record<
+  string,
+  "default" | "primary" | "secondary" | "error" | "info" | "success" | "warning"
+> = {
+  new: "primary",
+  processed: "success",
+  //
+  // active: "primary",
+  // done: "success",
+  // error: "error",
+  // waiting: "warning",
+  // default: "default",
+};
 
 const OrderPage = () => {
   const session = useSession();
@@ -162,67 +177,93 @@ const OrderPage = () => {
           if (order?.car?.imageNames && order?.car?.imageNames.length) {
             image = order?.car?.imageNames[0];
           }
+          let badgeContent = "Нова заявка";
+          if (order.status === "processed") {
+            badgeContent = "Опрацьована";
+          }
           return (
             <Link key={order.id} href={`/admin/order/${order.id}`}>
-              <ListItem key={order.id} disablePadding>
-                <ListItemButton>
-                  <Grid container spacing={2} alignItems="center">
-                    <Grid item xs={12} sm={4} md={3}>
-                      <Image
-                        src={`${BACKEND_URL}/uploads/cars/${image}`}
-                        alt={`${order?.car?.brandName} logo`}
-                        width={0}
-                        height={0}
-                        sizes="100vw"
-                        priority={true}
-                        style={{
-                          width: "100%",
-                          height: "auto",
-                          objectFit: "contain",
-                        }}
-                      />
-                    </Grid>
-                    <Grid item xs={12} sm={8} md={9}>
-                      <Box
-                        sx={{
-                          display: "grid",
-                          gridTemplateColumns: "1fr 1fr",
-                          gap: 1,
-                        }}
-                      >
-                        <Typography variant="body1">
-                          {order?.car?.brand?.brandName}{" "}
-                          {order?.car?.model?.modelName}
-                        </Typography>
-                        <Typography variant="body1">
-                          {new Intl.DateTimeFormat("uk-UA", {
-                            day: "2-digit",
-                            month: "short",
-                            year: "numeric",
-                          }).format(new Date(order?.car?.firstRegistration))}
-                        </Typography>
-                        <Typography variant="body1">{order.name}</Typography>
-                        <Typography variant="body1">{order.phone}</Typography>
-                        <Typography variant="body1">
-                          {new Intl.DateTimeFormat("uk-UA", {
-                            day: "2-digit",
-                            month: "short",
-                            year: "numeric",
-                          }).format(new Date(order.createdAt))}
-                        </Typography>
-                        <Typography variant="body1">
-                          {new Intl.NumberFormat("de-DE", {
-                            style: "currency",
-                            currency: "EUR",
-                            minimumFractionDigits: 0,
-                            maximumFractionDigits: 0,
-                          }).format(order?.car?.price)}
-                        </Typography>
-                      </Box>
-                    </Grid>
-                  </Grid>
-                </ListItemButton>
-              </ListItem>
+              <Paper
+                sx={{
+                  padding: 2,
+                  textAlign: "center",
+                  marginTop: 2,
+                  marginBottom: 2,
+                }}
+                elevation={24}
+              >
+                <Badge
+                  sx={{ width: "100%" }}
+                  badgeContent={badgeContent}
+                  color={statusColorMap[order?.status] || "default"}
+                >
+                  <ListItem key={order.id} disablePadding>
+                    <ListItemButton>
+                      <Grid container spacing={2} alignItems="center">
+                        <Grid item xs={12} sm={4} md={3}>
+                          <Image
+                            src={`${BACKEND_URL}/uploads/cars/${image}`}
+                            alt={`${order?.car?.brandName} logo`}
+                            width={0}
+                            height={0}
+                            sizes="100vw"
+                            priority={true}
+                            style={{
+                              width: "100%",
+                              height: "auto",
+                              objectFit: "contain",
+                            }}
+                          />
+                        </Grid>
+                        <Grid item xs={12} sm={8} md={9}>
+                          <Box
+                            sx={{
+                              display: "grid",
+                              gridTemplateColumns: "1fr 1fr",
+                              gap: 1,
+                            }}
+                          >
+                            <Typography variant="body1">
+                              {order?.car?.brand?.brandName}{" "}
+                              {order?.car?.model?.modelName}
+                            </Typography>
+                            <Typography variant="body1">
+                              {new Intl.DateTimeFormat("uk-UA", {
+                                day: "2-digit",
+                                month: "short",
+                                year: "numeric",
+                              }).format(
+                                new Date(order?.car?.firstRegistration)
+                              )}
+                            </Typography>
+                            <Typography variant="body1">
+                              {order.name}
+                            </Typography>
+                            <Typography variant="body1">
+                              {order.phone}
+                            </Typography>
+                            <Typography variant="body1">
+                              {new Intl.DateTimeFormat("uk-UA", {
+                                day: "2-digit",
+                                month: "short",
+                                year: "numeric",
+                              }).format(new Date(order.createdAt))}
+                            </Typography>
+                            <Typography variant="body1">
+                              {new Intl.NumberFormat("de-DE", {
+                                style: "currency",
+                                currency: "EUR",
+                                minimumFractionDigits: 0,
+                                maximumFractionDigits: 0,
+                              }).format(order?.car?.price)}
+                            </Typography>
+                          </Box>
+                        </Grid>
+                      </Grid>
+                    </ListItemButton>
+                  </ListItem>
+                </Badge>
+              </Paper>
             </Link>
           );
         })}
@@ -344,29 +385,28 @@ const OrderPage = () => {
               </Button>
             </Paper>
 
-            <Box component="div" sx={{ width: "100%" }}>
-              <Paper
-                sx={{
-                  padding: 2,
-                  textAlign: "center",
-                  marginTop: 2,
-                  marginBottom: 2,
-                }}
-                elevation={24}
-              >
-                {listContent}
-                {orders?.length ? (
-                  <Pagination
-                    sx={{
-                      display: "flex",
-                      justifyContent: "center",
-                      marginTop: 2,
-                    }}
-                    count={totalPages}
-                    onChange={(_, page) => setPage(page)}
-                  />
-                ) : null}
-              </Paper>
+            <Box
+              component="div"
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                paddingRight: 2,
+                marginBottom: 2,
+              }}
+            >
+              {listContent}
+              {orders?.length ? (
+                <Pagination
+                  sx={{
+                    display: "flex",
+                    justifyContent: "center",
+                    marginTop: 2,
+                  }}
+                  count={totalPages}
+                  onChange={(_, page) => setPage(page)}
+                />
+              ) : null}
+
               {/* <Box display={"flex"} justifyContent={"center"}>
                 <Link href={"/admin/car/new"}>
                   <Fab color="primary" aria-label="add">

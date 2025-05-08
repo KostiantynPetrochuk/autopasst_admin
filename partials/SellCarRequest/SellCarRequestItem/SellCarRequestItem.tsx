@@ -1,29 +1,15 @@
-import React, { useState } from "react";
+import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
-import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import Grid from "@mui/material/Grid";
 import Badge from "@mui/material/Badge";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemText from "@mui/material/ListItemText";
-import Collapse from "@mui/material/Collapse";
-import ExpandLess from "@mui/icons-material/ExpandLess";
-import ExpandMore from "@mui/icons-material/ExpandMore";
 import { SellCarRequest } from "@/types";
-import { red } from "@mui/material/colors";
 import { BACKEND_URL } from "@/lib/Constants";
-
-const OPTIONS = {
-  email: "/img/gmail.svg",
-  telegram: "/img/telegram.svg",
-  viber: "/img/viber.svg",
-  whatsapp: "/img/whatsApp.svg",
-};
 
 const statusColorMap: Record<
   string,

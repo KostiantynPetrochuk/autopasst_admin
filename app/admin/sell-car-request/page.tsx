@@ -303,7 +303,7 @@ const SellCarRequestPage = () => {
           sx={{
             display: "flex",
             flexDirection: "column",
-            paddingRight: 6,
+            paddingRight: 2,
             marginBottom: 2,
           }}
         >

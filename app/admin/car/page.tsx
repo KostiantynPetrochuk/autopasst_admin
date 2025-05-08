@@ -22,6 +22,7 @@ import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
+import Badge from "@mui/material/Badge";
 
 import Grid from "@mui/material/Grid";
 import { useSession, signOut } from "next-auth/react";
@@ -36,6 +37,20 @@ type ConditionKey = keyof typeof CONDITION;
 type BodyTypeKey = keyof typeof BODY_TYPES;
 type FuelTypeKey = keyof typeof FUEL_TYPES;
 type TransmissionTypeKey = keyof typeof TRANSMISSION;
+
+const statusColorMap: Record<
+  string,
+  "default" | "primary" | "secondary" | "error" | "info" | "success" | "warning"
+> = {
+  in_stock: "primary",
+  sold_out: "success",
+  //
+  // active: "primary",
+  // done: "success",
+  // error: "error",
+  // waiting: "warning",
+  // default: "default",
+};
 
 const CarPage = () => {
   const session = useSession();
@@ -180,73 +195,95 @@ const CarPage = () => {
           if (car?.imageNames?.length) {
             carImage = car?.imageNames[0];
           }
+          let badgeContent = "Нова заявка";
+          if (car.status === "sold_out") {
+            badgeContent = "Продано";
+          }
           return (
             <Link key={car.id} href={`/admin/car/${car.id}`}>
-              <ListItem disablePadding>
-                <ListItemButton>
-                  <Grid container spacing={2} alignItems="center">
-                    <Grid item xs={12} sm={4} md={3}>
-                      <Image
-                        src={`${BACKEND_URL}/uploads/cars/${carImage}`}
-                        alt={`${car.brandName} logo`}
-                        width={0}
-                        height={0}
-                        sizes="100vw"
-                        priority={true}
-                        style={{
-                          width: "100%",
-                          height: "auto",
-                          objectFit: "contain",
-                        }}
-                      />
-                    </Grid>
+              <Paper
+                sx={{
+                  padding: 2,
+                  textAlign: "center",
+                  marginTop: 2,
+                  marginBottom: 2,
+                }}
+                elevation={24}
+              >
+                <Badge
+                  sx={{ width: "100%" }}
+                  badgeContent={badgeContent}
+                  color={statusColorMap[car?.status] || "default"}
+                >
+                  <ListItem disablePadding>
+                    <ListItemButton>
+                      <Grid container spacing={2} alignItems="center">
+                        <Grid item xs={12} sm={4} md={3}>
+                          <Image
+                            src={`${BACKEND_URL}/uploads/cars/${carImage}`}
+                            alt={`${car.brandName} logo`}
+                            width={0}
+                            height={0}
+                            sizes="100vw"
+                            priority={true}
+                            style={{
+                              width: "100%",
+                              height: "auto",
+                              objectFit: "contain",
+                            }}
+                          />
+                        </Grid>
 
-                    <Grid item xs={12} sm={8} md={9}>
-                      <Box
-                        sx={{
-                          display: "grid",
-                          gridTemplateColumns: "1fr 1fr",
-                          gap: 1,
-                        }}
-                      >
-                        <Typography variant="body1">
-                          <strong>Бренд:&nbsp;</strong>
-                          {car.brandName}
-                        </Typography>
-                        <Typography variant="body1">
-                          <strong>Модель:&nbsp;</strong>
-                          {car.modelName}
-                        </Typography>
-                        <Typography variant="body1">
-                          <strong>Стан:&nbsp;</strong>
-                          {
-                            CONDITION[car.condition as keyof typeof CONDITION]
-                              .label.ua
-                          }
-                        </Typography>
-                        <Typography variant="body1">
-                          <strong>Пробіг:&nbsp;</strong> {car.mileage} км
-                        </Typography>
-                        <Typography variant="body1">
-                          <strong>Паливо:&nbsp;</strong>
-                          {
-                            FUEL_TYPES[car.fuelType as keyof typeof FUEL_TYPES]
-                              .label
-                          }
-                        </Typography>
-                        <Typography variant="body1">
-                          <strong>Дата створення:&nbsp;</strong>
-                          {new Intl.DateTimeFormat("uk-UA", {
-                            day: "2-digit",
-                            month: "short",
-                            year: "numeric",
-                          }).format(new Date(car.createdAt))}
-                        </Typography>
-                      </Box>
-                    </Grid>
-                  </Grid>
-                </ListItemButton>
-              </ListItem>
+                        <Grid item xs={12} sm={8} md={9}>
+                          <Box
+                            sx={{
+                              display: "grid",
+                              gridTemplateColumns: "1fr 1fr",
+                              gap: 1,
+                            }}
+                          >
+                            <Typography variant="body1">
+                              <strong>Бренд:&nbsp;</strong>
+                              {car.brandName}
+                            </Typography>
+                            <Typography variant="body1">
+                              <strong>Модель:&nbsp;</strong>
+                              {car.modelName}
+                            </Typography>
+                            <Typography variant="body1">
+                              <strong>Стан:&nbsp;</strong>
+                              {
+                                CONDITION[
+                                  car.condition as keyof typeof CONDITION
+                                ].label.ua
+                              }
+                            </Typography>
+                            <Typography variant="body1">
+                              <strong>Пробіг:&nbsp;</strong> {car.mileage} км
+                            </Typography>
+                            <Typography variant="body1">
+                              <strong>Паливо:&nbsp;</strong>
+                              {
+                                FUEL_TYPES[
+                                  car.fuelType as keyof typeof FUEL_TYPES
+                                ].label
+                              }
+                            </Typography>
+                            <Typography variant="body1">
+                              <strong>Дата створення:&nbsp;</strong>
+                              {new Intl.DateTimeFormat("uk-UA", {
+                                day: "2-digit",
+                                month: "short",
+                                year: "numeric",
+                              }).format(new Date(car.createdAt))}
+                            </Typography>
+                          </Box>
+                        </Grid>
+                      </Grid>
+                    </ListItemButton>
+                  </ListItem>
+                </Badge>
+              </Paper>
             </Link>
           );
         })}
@@ -499,31 +536,23 @@ const CarPage = () => {
                 justifyContent: "center",
                 flexDirection: "column",
                 alignItems: "center",
+                paddingRight: 2,
               }}
             >
-              <Paper
-                sx={{
-                  padding: 2,
-                  textAlign: "center",
-                  marginTop: 2,
-                  marginBottom: 2,
-                }}
-                elevation={24}
-              >
-                {listContent}
-                {cars?.length ? (
-                  <Pagination
-                    sx={{
-                      display: "flex",
-                      justifyContent: "center",
-                      marginTop: 2,
-                    }}
-                    count={totalPages}
-                    page={page}
-                    onChange={(_, page) => setPage(page)}
-                  />
-                ) : null}
-              </Paper>
+              {listContent}
+              {cars?.length ? (
+                <Pagination
+                  sx={{
+                    display: "flex",
+                    justifyContent: "center",
+                    marginTop: 2,
+                  }}
+                  count={totalPages}
+                  page={page}
+                  onChange={(_, page) => setPage(page)}
+                />
+              ) : null}
+
               <Link href={"/admin/car/new"}>
                 <Fab color="primary" aria-label="add">
                   <AddIcon />
