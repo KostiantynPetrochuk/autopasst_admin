@@ -31,8 +31,6 @@ import {
 import { useFetchWithAuth } from "@/hooks";
 
 import { AdminHeader, AppTitle, Loading, Message } from "@/components";
-import { useAppSelector, useAppDispatch } from "@/hooks";
-import { selectBrands, setBrands } from "@/store/features/brands/brandsSlice";
 
 import {
   BODY_TYPES,
@@ -44,16 +42,16 @@ import {
 } from "@/constants";
 
 import { useSession, signOut } from "next-auth/react";
+import { useBrandsStore } from "@/stores/useBrandsStore";
 
 const NewCarPage = () => {
   const session = useSession();
   const router = useRouter();
-  const dispatch = useAppDispatch();
   const { fetchWithAuth } = useFetchWithAuth();
   const [loading, setLoading] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [images, setImages] = useState(Array(3).fill(null));
-  const brands = useAppSelector(selectBrands);
+  const { brands, setBrands } = useBrandsStore();
   const [message, setMessage] = useState({
     open: false,
     severity: "error",
@@ -416,7 +414,7 @@ const NewCarPage = () => {
         setLoading(false);
         return;
       }
-      dispatch(setBrands(data.brands));
+      setBrands(data.brands);
       setLoading(false);
     };
     if (session.status === "authenticated") {

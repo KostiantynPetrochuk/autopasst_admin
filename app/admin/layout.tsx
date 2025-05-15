@@ -1,10 +1,8 @@
 "use client";
 
 // import type { Metadata } from "next";
-import Providers from "@/components/Providers";
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v13-appRouter";
 import { ThemeProvider } from "@mui/material/styles";
-import { Provider } from "react-redux";
 import ukLocale from "date-fns/locale/uk";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
@@ -13,8 +11,6 @@ import theme from "../../theme";
 
 import "../globals.css";
 import "../normalize.css";
-
-import { store } from "../../store";
 
 // export const metadata: Metadata = {
 //   title: "Autopasst",
@@ -34,11 +30,7 @@ export default function RootLayout({
           adapterLocale={ukLocale}
         >
           <AppRouterCacheProvider>
-            <ThemeProvider theme={theme}>
-              <Providers>
-                <Provider store={store}>{children}</Provider>
-              </Providers>
-            </ThemeProvider>
+            <ThemeProvider theme={theme}>{children}</ThemeProvider>
           </AppRouterCacheProvider>
         </LocalizationProvider>
       </body>

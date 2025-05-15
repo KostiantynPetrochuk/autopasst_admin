@@ -1,3 +1,4 @@
+"use client";
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
@@ -11,23 +12,21 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import Paper from "@mui/material/Paper";
 
-import { useAppSelector, useAppDispatch } from "@/hooks";
-import { selectBrands, setBrands } from "@/store/features/brands/brandsSlice";
 import { Loading, Message } from "@/components";
 import { useFetchWithAuth } from "@/hooks";
 import { AddBrandDialog } from "@/partials/Brands";
 import { Brand } from "@/types";
 import { useSession, signOut } from "next-auth/react";
 import { STATIC_URL } from "@/lib/Constants";
+import { useBrandsStore } from "@/stores/useBrandsStore";
 
 const AddBrand = ({ open, setOpen }: any) => {
   const session = useSession();
-  const dispatch = useAppDispatch();
   const { fetchWithAuth } = useFetchWithAuth();
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [brandName, setBrandName] = useState<string>("");
   const [imageFile, setImageFile] = useState<File | null>(null);
-  const brands = useAppSelector(selectBrands);
+  const { brands, setBrands } = useBrandsStore();
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState({
     open: false,
@@ -93,8 +92,7 @@ const AddBrand = ({ open, setOpen }: any) => {
         return;
       }
       data.brand.models = [];
-
-      dispatch(setBrands([...brands, data.brand]));
+      setBrands([...brands, data.brand]);
       setBrandName("");
       setSelectedImage(null);
       if (fileInput) {
@@ -122,11 +120,9 @@ const AddBrand = ({ open, setOpen }: any) => {
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
-
       const { data, error } = await fetchWithAuth("/brands", {
         method: "GET",
       });
-
       if (error) {
         setMessage((prev) => ({
           ...prev,
@@ -137,15 +133,13 @@ const AddBrand = ({ open, setOpen }: any) => {
         setLoading(false);
         return;
       }
-
-      dispatch(setBrands(data.brands));
+      setBrands(data.brands);
       setLoading(false);
     };
     if (session.status === "authenticated") {
       const sessionWithError = session.data as typeof session.data & {
         error?: string;
       };
-
       if (sessionWithError?.error === "RefreshAccessTokenError") {
         signOut({ callbackUrl: "/signin" });
       }

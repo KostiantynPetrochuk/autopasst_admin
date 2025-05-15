@@ -19,13 +19,7 @@ import Button from "@mui/material/Button";
 import HomeIcon from "@mui/icons-material/Home";
 import { AddModelDialog } from "@/partials/Brands";
 import { useFetchWithAuth } from "@/hooks";
-import { useAppDispatch, useAppSelector } from "@/hooks";
-import {
-  selectBrands,
-  setBrands,
-  addModelToBrand,
-  changeModelName,
-} from "@/store/features/brands/brandsSlice";
+import { useBrandsStore } from "@/stores/useBrandsStore";
 import { Message, Loading } from "@/components";
 import { STATIC_URL } from "@/lib/Constants";
 
@@ -33,11 +27,11 @@ const BrandPage = ({ params }: { params: { id: string } }) => {
   const session = useSession();
   const [open, setOpen] = useState(false);
   const [openEditModel, setOpenEditModel] = useState(false);
-  const dispatch = useAppDispatch();
   const { fetchWithAuth } = useFetchWithAuth();
   const [modelName, setModelName] = useState<string>("");
   const [modelId, setModelId] = useState<number>();
-  const brands = useAppSelector(selectBrands);
+  const { brands, setBrands, changeModelName, addModelToBrand } =
+    useBrandsStore();
   const brand = brands.find((brand) => brand.id === Number(params.id));
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState({
@@ -93,16 +87,13 @@ const BrandPage = ({ params }: { params: { id: string } }) => {
         setLoading(false);
         return;
       }
+      const brandId = Number(params.id);
+      addModelToBrand(brandId, {
+        id: data.model.id,
+        modelName: data.model.modelName,
+        brandId,
+      });
 
-      dispatch(
-        addModelToBrand({
-          brandId: params.id,
-          model: {
-            id: data.model.id,
-            modelName: data.model.modelName,
-          },
-        })
-      );
       setModelName("");
       setOpen(false);
       setLoading(false);
@@ -157,13 +148,9 @@ const BrandPage = ({ params }: { params: { id: string } }) => {
         setLoading(false);
         return;
       }
-      dispatch(
-        changeModelName({
-          brandId: brand?.id,
-          modelId,
-          modelName,
-        })
-      );
+      if (brand?.id !== undefined && modelId !== undefined) {
+        changeModelName(brand.id, modelId, modelName);
+      }
       setMessage((prev) => ({
         ...prev,
         open: true,
@@ -200,7 +187,7 @@ const BrandPage = ({ params }: { params: { id: string } }) => {
         setLoading(false);
         return;
       }
-      dispatch(setBrands(data.brands));
+      setBrands(data.brands);
       setLoading(false);
     };
 
