@@ -4,8 +4,7 @@ import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
-import { useAppDispatch, useAppSelector, useFetchWithAuth } from "@/hooks";
-
+import { useFetchWithAuth } from "@/hooks";
 import { AdminHeader, AppTitle, Loading, Message } from "@/components";
 import SentimentDissatisfiedIcon from "@mui/icons-material/SentimentDissatisfied";
 import Button from "@mui/material/Button";
@@ -19,47 +18,24 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import Switch from "@mui/material/Switch";
 import TextField from "@mui/material/TextField";
 import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import ListItemButton from "@mui/material/ListItemButton";
-import Grid from "@mui/material/Grid";
-import Badge from "@mui/material/Badge";
-
 import { useSession, signOut } from "next-auth/react";
 import { SellCarRequest } from "@/types";
 import Pagination from "@mui/material/Pagination";
 import { CAR_SELECTION_STATUSES } from "@/constants";
-import {
-  selectSellCarRequests,
-  setSellCarRequests,
-} from "@/store/features/sellCarRequests/sellCarRequestsSlice";
 import SellCarRequestItem from "@/partials/SellCarRequest/SellCarRequestItem";
-
-const statusColorMap: Record<
-  string,
-  "default" | "primary" | "secondary" | "error" | "info" | "success" | "warning"
-> = {
-  new: "primary",
-  processed: "success",
-  //
-  // active: "primary",
-  // done: "success",
-  // error: "error",
-  // waiting: "warning",
-  // default: "default",
-};
+import { useSellCarRequestsStore } from "@/stores/useSellCarRequestsStore";
 
 const LIMIT = 5;
-// carSelection  -> delete
+
 const SellCarRequestPage = () => {
   const session = useSession();
-  const dispatch = useAppDispatch();
+
   const { fetchWithAuth } = useFetchWithAuth();
   const [loading, setLoading] = useState(true);
   const [totalPages, setTotalPages] = useState(0);
   const [page, setPage] = useState(1);
   const [selectedStatus, setSelectedStatus] = useState<string>("new");
-  const sellCarRequests = useAppSelector(selectSellCarRequests);
-  console.log({ sellCarRequests });
+  const { sellCarRequests, setSellCarRequests } = useSellCarRequestsStore();
   const [message, setMessage] = useState({
     open: false,
     severity: "error",
@@ -116,7 +92,7 @@ const SellCarRequestPage = () => {
               text: "Помилка завантаження замовлень.",
             }));
           }
-          dispatch(setSellCarRequests(data.sellCarRequests));
+          setSellCarRequests(data.sellCarRequests);
           setTotalPages(Math.ceil(data.total / LIMIT));
         } catch (error) {
           console.error("Error fetching data:", error);

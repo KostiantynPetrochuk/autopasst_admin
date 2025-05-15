@@ -5,12 +5,11 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogTitle from "@mui/material/DialogTitle";
 import { useFetchWithAuth } from "@/hooks";
 import { Message, Loading } from "@/components";
-import { useAppDispatch } from "@/hooks";
-import { setCarSelectionStatus } from "@/store/features/carSelections/carSelectionsSlice";
+import { useCarSelectionsStore } from "@/stores/useCarSellectionsStore";
 
 const CarSelectionStatusButton = ({ id }: { id: number }) => {
-  const dispatch = useAppDispatch();
   const { fetchWithAuth } = useFetchWithAuth();
+  const { setCarSelectionStatus } = useCarSelectionsStore();
   const [openReport, setOpenReport] = React.useState(false);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState({
@@ -52,7 +51,7 @@ const CarSelectionStatusButton = ({ id }: { id: number }) => {
         }));
         return;
       }
-      dispatch(setCarSelectionStatus({ id, status: "processed" }));
+      setCarSelectionStatus(id, "processed");
       handleCloseReport();
     } catch (error) {
       setMessage((prev) => ({

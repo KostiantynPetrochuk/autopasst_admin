@@ -1,11 +1,5 @@
-import { useDispatch, useSelector } from "react-redux";
-import type { RootState, AppDispatch } from "../store";
-
 import { useSession } from "next-auth/react";
 import { BACKEND_URL } from "@/lib/Constants";
-
-export const useAppDispatch = useDispatch.withTypes<AppDispatch>();
-export const useAppSelector = useSelector.withTypes<RootState>();
 
 export const useFetchWithAuth = () => {
   const { data: session, update } = useSession();

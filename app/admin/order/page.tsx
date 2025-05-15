@@ -8,10 +8,9 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 // import Fab from "@mui/material/Fab";
 // import AddIcon from "@mui/icons-material/Add";
-import { useAppDispatch, useAppSelector, useFetchWithAuth } from "@/hooks";
+import { useFetchWithAuth } from "@/hooks";
 
 import { AdminHeader, AppTitle, Loading, Message } from "@/components";
-import { selectOrders, setOrders } from "@/store/features/orders/ordersSlice";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
@@ -34,6 +33,7 @@ import { Order } from "@/types";
 import Pagination from "@mui/material/Pagination";
 import { BACKEND_URL } from "@/lib/Constants";
 import { ORDER_STATUSES } from "@/constants";
+import { useOrdersStore } from "@/stores/useOrdersStore";
 
 const LIMIT = 5;
 
@@ -42,24 +42,19 @@ const statusColorMap: Record<
   "default" | "primary" | "secondary" | "error" | "info" | "success" | "warning"
 > = {
   new: "primary",
-  processed: "success",
-  //
-  // active: "primary",
-  // done: "success",
-  // error: "error",
-  // waiting: "warning",
-  // default: "default",
+  canceled: "error",
+  confirmed: "warning",
+  completed: "success",
 };
 
 const OrderPage = () => {
   const session = useSession();
-  const dispatch = useAppDispatch();
   const { fetchWithAuth } = useFetchWithAuth();
   const [loading, setLoading] = useState(true);
   const [totalPages, setTotalPages] = useState(0);
   const [page, setPage] = useState(1);
   const [selectedStatus, setSelectedStatus] = useState<string>("new");
-  const orders = useAppSelector(selectOrders);
+  const { orders, setOrders } = useOrdersStore();
   const [message, setMessage] = useState({
     open: false,
     severity: "error",
@@ -116,7 +111,7 @@ const OrderPage = () => {
               text: "Помилка завантаження замовлень.",
             }));
           }
-          dispatch(setOrders(data.orders));
+          setOrders(data.orders);
           setTotalPages(Math.ceil(data.total / LIMIT));
         } catch (error) {
           console.error("Error fetching data:", error);
@@ -178,8 +173,14 @@ const OrderPage = () => {
             image = order?.car?.imageNames[0];
           }
           let badgeContent = "Нова заявка";
-          if (order.status === "processed") {
-            badgeContent = "Опрацьована";
+          if (order.status === "canceled") {
+            badgeContent = "Скасована";
+          }
+          if (order.status === "confirmed") {
+            badgeContent = "Підтверджена";
+          }
+          if (order.status === "completed") {
+            badgeContent = "Виконана";
           }
           return (
             <Link key={order.id} href={`/admin/order/${order.id}`}>

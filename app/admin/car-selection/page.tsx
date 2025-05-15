@@ -4,7 +4,7 @@ import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
-import { useAppDispatch, useAppSelector, useFetchWithAuth } from "@/hooks";
+import { useFetchWithAuth } from "@/hooks";
 
 import { AdminHeader, AppTitle, Loading, Message } from "@/components";
 import List from "@mui/material/List";
@@ -19,28 +19,24 @@ import { DateCalendar } from "@mui/x-date-pickers/DateCalendar";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Switch from "@mui/material/Switch";
 import TextField from "@mui/material/TextField";
+import { useCarSelectionsStore } from "@/stores/useCarSellectionsStore";
 
 import { useSession, signOut } from "next-auth/react";
 import { CarSelection } from "@/types";
 import Pagination from "@mui/material/Pagination";
 import { CAR_SELECTION_STATUSES } from "@/constants";
-import {
-  selectCarSelections,
-  setCarSelections,
-} from "@/store/features/carSelections/carSelectionsSlice";
 import CarSelectionItem from "@/partials/CarSelection/CarSelectionItem";
 
 const LIMIT = 5;
 
 const CarSelectionsPage = () => {
   const session = useSession();
-  const dispatch = useAppDispatch();
   const { fetchWithAuth } = useFetchWithAuth();
   const [loading, setLoading] = useState(true);
   const [totalPages, setTotalPages] = useState(0);
   const [page, setPage] = useState(1);
   const [selectedStatus, setSelectedStatus] = useState<string>("new");
-  const carSelections = useAppSelector(selectCarSelections);
+  const { carSelections, setCarSelections } = useCarSelectionsStore();
   const [message, setMessage] = useState({
     open: false,
     severity: "error",
@@ -97,7 +93,7 @@ const CarSelectionsPage = () => {
               text: "Помилка завантаження замовлень.",
             }));
           }
-          dispatch(setCarSelections(data.carSelections));
+          setCarSelections(data.carSelections);
           setTotalPages(Math.ceil(data.total / LIMIT));
         } catch (error) {
           console.error("Error fetching data:", error);

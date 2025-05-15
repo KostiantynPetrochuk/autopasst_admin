@@ -5,12 +5,11 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogTitle from "@mui/material/DialogTitle";
 import { useFetchWithAuth } from "@/hooks";
 import { Message, Loading } from "@/components";
-import { useAppDispatch } from "@/hooks";
-import { setCarSelectionStatus } from "@/store/features/carSelections/carSelectionsSlice";
+import { useSellCarRequestsStore } from "@/stores/useSellCarRequestsStore";
 
 const SellCarRequestStatusButton = ({ id }: { id: number }) => {
-  const dispatch = useAppDispatch();
   const { fetchWithAuth } = useFetchWithAuth();
+  const { setSellCarRequestStatus } = useSellCarRequestsStore();
   const [openReport, setOpenReport] = React.useState(false);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState({
@@ -39,7 +38,7 @@ const SellCarRequestStatusButton = ({ id }: { id: number }) => {
         id,
         status: "processed",
       };
-      const { error } = await fetchWithAuth("/car-selection/status", {
+      const { error } = await fetchWithAuth("/sell-car-request/status", {
         method: "PATCH",
         body: JSON.stringify(body),
       });
@@ -52,7 +51,7 @@ const SellCarRequestStatusButton = ({ id }: { id: number }) => {
         }));
         return;
       }
-      dispatch(setCarSelectionStatus({ id, status: "processed" }));
+      setSellCarRequestStatus(id, "processed");
       handleCloseReport();
     } catch (error) {
       setMessage((prev) => ({

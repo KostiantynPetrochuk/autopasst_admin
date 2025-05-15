@@ -8,10 +8,8 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import Fab from "@mui/material/Fab";
 import AddIcon from "@mui/icons-material/Add";
-import { useAppDispatch, useAppSelector, useFetchWithAuth } from "@/hooks";
+import { useFetchWithAuth } from "@/hooks";
 import { AdminHeader, AppTitle, Loading, Message } from "@/components";
-import { setBrands } from "@/store/features/brands/brandsSlice";
-import { selectCars, setCars } from "@/store/features/cars/carsSlice";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
@@ -23,6 +21,8 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
 import Badge from "@mui/material/Badge";
+import { useBrandsStore } from "@/stores/useBrandsStore";
+import { useCarsStore } from "@/stores/useCarsStore";
 
 import Grid from "@mui/material/Grid";
 import { useSession, signOut } from "next-auth/react";
@@ -30,7 +30,6 @@ import { BODY_TYPES, CONDITION, FUEL_TYPES, TRANSMISSION } from "@/constants";
 import { Car } from "@/types";
 import Pagination from "@mui/material/Pagination";
 import { BACKEND_URL } from "@/lib/Constants";
-import { selectBrands } from "@/store/features/brands/brandsSlice";
 
 const LIMIT = 5;
 type ConditionKey = keyof typeof CONDITION;
@@ -54,13 +53,12 @@ const statusColorMap: Record<
 
 const CarPage = () => {
   const session = useSession();
-  const dispatch = useAppDispatch();
   const { fetchWithAuth } = useFetchWithAuth();
-  const brands = useAppSelector(selectBrands);
+  const { brands, setBrands } = useBrandsStore();
+  const { cars, setCars } = useCarsStore();
   const [loading, setLoading] = useState(true);
   const [totalPages, setTotalPages] = useState(0);
   const [page, setPage] = useState(1);
-  const cars = useAppSelector(selectCars);
   const [message, setMessage] = useState({
     open: false,
     severity: "error",
@@ -96,7 +94,7 @@ const CarPage = () => {
               text: "Помилка завантаження брендів автомобілів.",
             }));
           }
-          dispatch(setBrands(brandsResult.brands));
+          setBrands(brandsResult.brands);
         }
         const params = new URLSearchParams({
           condition: selectedCondition !== "0" ? selectedCondition : "",
@@ -132,7 +130,7 @@ const CarPage = () => {
             text: "Помилка завантаження автомобілів.",
           }));
         }
-        dispatch(setCars(carsResult.cars));
+        setCars(carsResult.cars);
         setTotalPages(Math.ceil(carsResult.total / LIMIT));
       } catch (error) {
         console.error("Error fetching data:", error);
