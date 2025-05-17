@@ -193,7 +193,7 @@ const CarPage = () => {
           if (car?.imageNames?.length) {
             carImage = car?.imageNames[0];
           }
-          let badgeContent = "Нова заявка";
+          let badgeContent = "Доступно";
           if (car.status === "sold_out") {
             badgeContent = "Продано";
           }
@@ -219,7 +219,7 @@ const CarPage = () => {
                         <Grid item xs={12} sm={4} md={3}>
                           <Image
                             src={`${BACKEND_URL}uploads/cars/${carImage}`}
-                            alt={`${car.brandName} logo`}
+                            alt={`${car?.brand?.brandName} logo`}
                             width={0}
                             height={0}
                             sizes="100vw"
@@ -242,11 +242,11 @@ const CarPage = () => {
                           >
                             <Typography variant="body1">
                               <strong>Бренд:&nbsp;</strong>
-                              {car.brandName}
+                              {car?.brand?.brandName}
                             </Typography>
                             <Typography variant="body1">
                               <strong>Модель:&nbsp;</strong>
-                              {car.modelName}
+                              {car?.model?.modelName}
                             </Typography>
                             <Typography variant="body1">
                               <strong>Стан:&nbsp;</strong>
