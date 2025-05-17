@@ -99,7 +99,7 @@ const OrderPage = () => {
                 : "",
             createdAt: byDate ? dateString : "",
           });
-          const url = `/orders?${params.toString()}`;
+          const url = `order?${params.toString()}`;
           const { data, error } = await fetchWithAuth(url, {
             method: "GET",
           });
@@ -203,7 +203,7 @@ const OrderPage = () => {
                       <Grid container spacing={2} alignItems="center">
                         <Grid item xs={12} sm={4} md={3}>
                           <Image
-                            src={`${BACKEND_URL}/uploads/cars/${image}`}
+                            src={`${BACKEND_URL}uploads/cars/${image}`}
                             alt={`${order?.car?.brandName} logo`}
                             width={0}
                             height={0}

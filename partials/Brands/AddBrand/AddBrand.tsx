@@ -17,7 +17,7 @@ import { useFetchWithAuth } from "@/hooks";
 import { AddBrandDialog } from "@/partials/Brands";
 import { Brand } from "@/types";
 import { useSession, signOut } from "next-auth/react";
-import { STATIC_URL } from "@/lib/Constants";
+import { BACKEND_URL } from "@/lib/Constants";
 import { useBrandsStore } from "@/stores/useBrandsStore";
 
 const AddBrand = ({ open, setOpen }: any) => {
@@ -71,13 +71,13 @@ const AddBrand = ({ open, setOpen }: any) => {
       return;
     }
     const formData = new FormData();
-    formData.append("brand_name", brandName);
+    formData.append("brandName", brandName);
     const fileInput = document.querySelector<HTMLInputElement>("#image-upload");
     if (imageFile) {
       formData.append("file", imageFile);
     }
     try {
-      const { data, error } = await fetchWithAuth("/brands", {
+      const { data, error } = await fetchWithAuth("brand", {
         method: "POST",
         body: formData,
       });
@@ -120,7 +120,7 @@ const AddBrand = ({ open, setOpen }: any) => {
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
-      const { data, error } = await fetchWithAuth("/brands", {
+      const { data, error } = await fetchWithAuth("brand", {
         method: "GET",
       });
       if (error) {
@@ -133,7 +133,7 @@ const AddBrand = ({ open, setOpen }: any) => {
         setLoading(false);
         return;
       }
-      setBrands(data.brands);
+      setBrands(data);
       setLoading(false);
     };
     if (session.status === "authenticated") {
@@ -155,7 +155,7 @@ const AddBrand = ({ open, setOpen }: any) => {
     content = (
       <>
         <Box sx={{ width: "100%", maxWidth: 360, bgcolor: "background.paper" }}>
-          {brands.length ? (
+          {brands?.length ? (
             <Paper
               sx={{
                 padding: 2,
@@ -171,7 +171,7 @@ const AddBrand = ({ open, setOpen }: any) => {
                         <ListItemButton>
                           <ListItemIcon>
                             <Image
-                              src={`${STATIC_URL}/brands/${brand.fileName}`}
+                              src={`${BACKEND_URL}uploads/brands/${brand.fileName}`}
                               alt="brand_logo"
                               height={50}
                               width={50}

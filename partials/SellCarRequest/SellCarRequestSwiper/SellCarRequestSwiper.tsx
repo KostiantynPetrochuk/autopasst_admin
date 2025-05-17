@@ -39,7 +39,7 @@ const SellCarRequestSwiper = ({
         {sellCarRequest?.imageNames?.map((image) => (
           <SwiperSlide key={image}>
             <Image
-              src={`${BACKEND_URL}/uploads/sell_car_requests/${image}`}
+              src={`${BACKEND_URL}uploads/sell_car_requests/${image}`}
               alt={`${image} logo`}
               width={300}
               height={300}
@@ -71,7 +71,7 @@ const SellCarRequestSwiper = ({
         {sellCarRequest?.imageNames?.map((image) => (
           <SwiperSlide key={image}>
             <Image
-              src={`${BACKEND_URL}/uploads/sell_car_requests/${image}`}
+              src={`${BACKEND_URL}uploads/sell_car_requests/${image}`}
               alt={`${image} logo`}
               height={200}
               width={200}

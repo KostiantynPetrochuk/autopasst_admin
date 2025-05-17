@@ -53,8 +53,11 @@ const SellCarRequestStatus = ({
         id: sellCarRequest?.id,
         status: selectedStatus,
       };
-      const { error } = await fetchWithAuth("/sell-car-request/status", {
+      const { error } = await fetchWithAuth("sell-car-request/status", {
         method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify(body),
       });
       if (error) {

@@ -64,14 +64,14 @@ const NewCarPage = () => {
   // Form state
   const [form, setForm] = useState({
     vin: "",
-    brandId: brands[0]?.id ?? "",
+    brandId: brands?.[0]?.id ?? "",
     modelId: "",
     info: "",
     condition: "",
-    body: "",
+    bodyType: "",
     firstRegistration: "",
     mileage: 0,
-    fuel_type: "",
+    fuelType: "",
     transmission: "",
     maintenance: "", // техобслуговування до
     ecoClass: "",
@@ -84,10 +84,10 @@ const NewCarPage = () => {
     modelId: false,
     info: false,
     condition: false,
-    body: false,
+    bodyType: false,
     firstRegistration: false,
     mileage: false,
-    fuel_type: false,
+    fuelType: false,
     transmission: false,
     maintenance: false,
     ecoClass: false,
@@ -138,10 +138,10 @@ const NewCarPage = () => {
       modelId,
       info,
       condition,
-      body,
+      bodyType,
       firstRegistration,
       mileage,
-      fuel_type,
+      fuelType,
       transmission,
       maintenance,
       ecoClass,
@@ -194,10 +194,10 @@ const NewCarPage = () => {
       return;
     }
 
-    if (!body) {
+    if (!bodyType) {
       setErrors((prev) => ({
         ...prev,
-        body: true,
+        bodyType: true,
       }));
       setLoading(false);
       setMessage((prev) => ({
@@ -239,10 +239,10 @@ const NewCarPage = () => {
       return;
     }
 
-    if (!fuel_type) {
+    if (!fuelType) {
       setErrors((prev) => ({
         ...prev,
-        fuel_type: true,
+        fuelType: true,
       }));
       setLoading(false);
       setMessage((prev) => ({
@@ -319,10 +319,10 @@ const NewCarPage = () => {
       !modelId ||
       !info ||
       !condition ||
-      !body ||
+      !bodyType ||
       !firstRegistration ||
       !mileage ||
-      !fuel_type ||
+      !fuelType ||
       !transmission ||
       !maintenance ||
       !ecoClass ||
@@ -359,7 +359,7 @@ const NewCarPage = () => {
     });
 
     try {
-      const { error } = await fetchWithAuth("/cars", {
+      const { error } = await fetchWithAuth("cars", {
         method: "POST",
         body: formData,
       });
@@ -380,10 +380,10 @@ const NewCarPage = () => {
         modelId: "",
         info: "",
         condition: "",
-        body: "",
+        bodyType: "",
         firstRegistration: "",
         mileage: 0,
-        fuel_type: "",
+        fuelType: "",
         transmission: "",
         maintenance: "", // техобслуговування до
         ecoClass: "",
@@ -401,7 +401,7 @@ const NewCarPage = () => {
   useEffect(() => {
     const getBrands = async () => {
       setLoading(true);
-      const { data, error } = await fetchWithAuth("/brands", {
+      const { data, error } = await fetchWithAuth("brand", {
         method: "GET",
       });
       if (error) {
@@ -414,7 +414,7 @@ const NewCarPage = () => {
         setLoading(false);
         return;
       }
-      setBrands(data.brands);
+      setBrands(data);
       setLoading(false);
     };
     if (session.status === "authenticated") {
@@ -431,7 +431,7 @@ const NewCarPage = () => {
     }
   }, [session]);
 
-  const currentBrand = brands.find(
+  const currentBrand = brands?.find(
     (currentBrand) => currentBrand.id == form.brandId
   );
 
@@ -487,7 +487,7 @@ const NewCarPage = () => {
                       name="brandId"
                       error={errors.brandId}
                     >
-                      {brands.map((brand) => {
+                      {brands?.map((brand) => {
                         return (
                           <MenuItem key={brand.id} value={brand.id}>
                             {brand.brandName}
@@ -567,10 +567,10 @@ const NewCarPage = () => {
                       labelId="demo-simple-select-label"
                       label="Тип кузова"
                       id="demo-simple-select"
-                      value={form.body}
+                      value={form.bodyType}
                       onChange={handleChange}
-                      name="body"
-                      error={errors.body}
+                      name="bodyType"
+                      error={errors.bodyType}
                     >
                       {Object.keys(BODY_TYPES).map((value) => {
                         return (
@@ -647,10 +647,10 @@ const NewCarPage = () => {
                       labelId="demo-simple-select-label"
                       id="demo-simple-select"
                       label="Тип пального"
-                      value={form.fuel_type}
+                      value={form.fuelType}
                       onChange={handleChange}
-                      name="fuel_type"
-                      error={errors.fuel_type}
+                      name="fuelType"
+                      error={errors.fuelType}
                     >
                       {Object.keys(FUEL_TYPES).map((value) => {
                         return (

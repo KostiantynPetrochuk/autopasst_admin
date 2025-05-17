@@ -81,7 +81,7 @@ const CarSelectionsPage = () => {
                 : "",
             createdAt: byDate ? dateString : "",
           });
-          const url = `/car-selection?${params.toString()}`;
+          const url = `car-selection?${params.toString()}`;
           const { data, error } = await fetchWithAuth(url, {
             method: "GET",
           });

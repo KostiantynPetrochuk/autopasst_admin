@@ -80,7 +80,7 @@ const SellCarRequestPage = () => {
                 : "",
             createdAt: byDate ? dateString : "",
           });
-          const url = `/sell-car-request?${params.toString()}`;
+          const url = `sell-car-request?${params.toString()}`;
           const { data, error } = await fetchWithAuth(url, {
             method: "GET",
           });

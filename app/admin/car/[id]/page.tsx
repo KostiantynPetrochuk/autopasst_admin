@@ -30,7 +30,7 @@ const CarPage = ({ params }: { params: { id: string } }) => {
     const getData = async () => {
       setLoading(true);
       try {
-        const { data, error } = await fetchWithAuth(`/cars/${params.id}`, {
+        const { data, error } = await fetchWithAuth(`cars/${params.id}`, {
           method: "GET",
         });
         if (error) {
@@ -43,7 +43,7 @@ const CarPage = ({ params }: { params: { id: string } }) => {
           setLoading(false);
           return;
         }
-        setCar(data.car);
+        setCar(data);
       } catch (error) {
         console.error("Error fetching data:", error);
       } finally {
@@ -84,7 +84,9 @@ const CarPage = ({ params }: { params: { id: string } }) => {
               component="div"
               sx={{ display: "flex", flexDirection: "column", marginBottom: 2 }}
             >
-              <AppTitle title={`${car.brandName} ${car.modelName}`} />
+              <AppTitle
+                title={`${car.brand?.brandName} ${car?.model?.modelName}`}
+              />
               <CarSwiper car={car} />
               <MainCharacteristics car={car} />
               <Specification car={car} />

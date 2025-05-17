@@ -21,7 +21,7 @@ import { AddModelDialog } from "@/partials/Brands";
 import { useFetchWithAuth } from "@/hooks";
 import { useBrandsStore } from "@/stores/useBrandsStore";
 import { Message, Loading } from "@/components";
-import { STATIC_URL } from "@/lib/Constants";
+import { BACKEND_URL } from "@/lib/Constants";
 
 const BrandPage = ({ params }: { params: { id: string } }) => {
   const session = useSession();
@@ -68,7 +68,7 @@ const BrandPage = ({ params }: { params: { id: string } }) => {
       return;
     }
     try {
-      const { data, error } = await fetchWithAuth("/models", {
+      const { data, error } = await fetchWithAuth("model", {
         method: "POST",
         body: JSON.stringify({ brandId: Number(params.id), modelName }),
         headers: {
@@ -89,8 +89,8 @@ const BrandPage = ({ params }: { params: { id: string } }) => {
       }
       const brandId = Number(params.id);
       addModelToBrand(brandId, {
-        id: data.model.id,
-        modelName: data.model.modelName,
+        id: data.id,
+        modelName: data.modelName,
         brandId,
       });
 
@@ -129,7 +129,7 @@ const BrandPage = ({ params }: { params: { id: string } }) => {
       return;
     }
     try {
-      const { data, error } = await fetchWithAuth("/models", {
+      const { data, error } = await fetchWithAuth("model", {
         method: "PATCH",
         body: JSON.stringify({ modelId, modelName }),
         headers: {
@@ -174,7 +174,7 @@ const BrandPage = ({ params }: { params: { id: string } }) => {
   useEffect(() => {
     const getBrands = async () => {
       setLoading(true);
-      const { data, error } = await fetchWithAuth("/brands", {
+      const { data, error } = await fetchWithAuth("brand", {
         method: "GET",
       });
       if (error) {
@@ -187,7 +187,7 @@ const BrandPage = ({ params }: { params: { id: string } }) => {
         setLoading(false);
         return;
       }
-      setBrands(data.brands);
+      setBrands(data);
       setLoading(false);
     };
 
@@ -232,7 +232,7 @@ const BrandPage = ({ params }: { params: { id: string } }) => {
               elevation={24}
             >
               <Image
-                src={`${STATIC_URL}/brands/${brand?.fileName}`}
+                src={`${BACKEND_URL}uploads/brands/${brand?.fileName}`}
                 alt="brand_logo"
                 height={50}
                 width={50}

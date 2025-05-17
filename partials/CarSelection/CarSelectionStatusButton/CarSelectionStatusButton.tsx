@@ -38,8 +38,11 @@ const CarSelectionStatusButton = ({ id }: { id: number }) => {
         id,
         status: "processed",
       };
-      const { error } = await fetchWithAuth("/car-selection/status", {
+      const { error } = await fetchWithAuth("car-selection/status", {
         method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify(body),
       });
       if (error) {

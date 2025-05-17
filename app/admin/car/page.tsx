@@ -83,7 +83,7 @@ const CarPage = () => {
       try {
         if (!brands || !brands.length) {
           const { data: brandsResult, error: brandsError } =
-            await fetchWithAuth("/brands", {
+            await fetchWithAuth("brand", {
               method: "GET",
             });
           if (brandsError) {
@@ -112,7 +112,7 @@ const CarPage = () => {
           offset: String((page - 1) * LIMIT),
           limit: String(LIMIT),
         });
-        const url = `/cars?${params.toString()}`;
+        const url = `cars?${params.toString()}`;
         const { data: carsResult, error: carsError } = await fetchWithAuth(
           url,
           {
@@ -130,7 +130,7 @@ const CarPage = () => {
             text: "Помилка завантаження автомобілів.",
           }));
         }
-        setCars(carsResult.cars);
+        setCars(carsResult.data);
         setTotalPages(Math.ceil(carsResult.total / LIMIT));
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -218,7 +218,7 @@ const CarPage = () => {
                       <Grid container spacing={2} alignItems="center">
                         <Grid item xs={12} sm={4} md={3}>
                           <Image
-                            src={`${BACKEND_URL}/uploads/cars/${carImage}`}
+                            src={`${BACKEND_URL}uploads/cars/${carImage}`}
                             alt={`${car.brandName} logo`}
                             width={0}
                             height={0}
@@ -550,8 +550,7 @@ const CarPage = () => {
                   onChange={(_, page) => setPage(page)}
                 />
               ) : null}
-
-              <Link href={"/admin/car/new"}>
+              <Link style={{ marginTop: 20 }} href={"/admin/car/new"}>
                 <Fab color="primary" aria-label="add">
                   <AddIcon />
                 </Fab>

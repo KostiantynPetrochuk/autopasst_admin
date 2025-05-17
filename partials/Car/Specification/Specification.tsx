@@ -30,7 +30,7 @@ const Specification = ({ car }: { car: Car }) => {
         component="label"
         onClick={async () => {
           try {
-            const fileUrl = `${BACKEND_URL}/uploads/cars/${car.specFilename}`;
+            const fileUrl = `${BACKEND_URL}uploads/cars/${car.specFilename}`;
             const response = await fetch(fileUrl);
             const blob = await response.blob();
             const url = window.URL.createObjectURL(blob);

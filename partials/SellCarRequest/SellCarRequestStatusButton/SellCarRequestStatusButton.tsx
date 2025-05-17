@@ -38,7 +38,7 @@ const SellCarRequestStatusButton = ({ id }: { id: number }) => {
         id,
         status: "processed",
       };
-      const { error } = await fetchWithAuth("/sell-car-request/status", {
+      const { error } = await fetchWithAuth("sell-car-request/status", {
         method: "PATCH",
         body: JSON.stringify(body),
       });

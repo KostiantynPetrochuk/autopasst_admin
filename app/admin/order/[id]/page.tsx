@@ -35,7 +35,7 @@ const OrderPage = ({ params }: { params: { id: string } }) => {
     const getData = async () => {
       setLoading(true);
       try {
-        const { data, error } = await fetchWithAuth(`/orders/${params.id}`, {
+        const { data, error } = await fetchWithAuth(`order/${params.id}`, {
           method: "GET",
         });
         if (error) {
@@ -48,7 +48,7 @@ const OrderPage = ({ params }: { params: { id: string } }) => {
           setLoading(false);
           return;
         }
-        setOrder(data?.order);
+        setOrder(data.order);
       } catch (error) {
         console.error("Error fetching data:", error);
       } finally {
@@ -78,7 +78,7 @@ const OrderPage = ({ params }: { params: { id: string } }) => {
   }
 
   if (!loading && order) {
-    const title = `Замовлення - ${order?.car.brand?.brandName} ${order?.car?.model?.modelName}`;
+    const title = `Замовлення - ${order?.car?.brand?.brandName} ${order?.car?.model?.modelName}`;
     return (
       <>
         <AdminHeader />

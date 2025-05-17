@@ -71,8 +71,11 @@ const OrderStatus = ({
       if (selectedStatus === "canceled") {
         body.cancelReason = cancelReason;
       }
-      const { error } = await fetchWithAuth("/orders/status", {
+      const { error } = await fetchWithAuth("order/status", {
         method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify(body),
       });
       if (error) {

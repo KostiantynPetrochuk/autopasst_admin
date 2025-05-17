@@ -41,7 +41,7 @@ const SellCarRequestPage = ({ params }: { params: { id: string } }) => {
       setLoading(true);
       try {
         const { data, error } = await fetchWithAuth(
-          `/sell-car-request/${params.id}`,
+          `sell-car-request/${params.id}`,
           {
             method: "GET",
           },

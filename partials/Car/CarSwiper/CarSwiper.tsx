@@ -34,10 +34,10 @@ const CarSwiper = ({ car }: { car: Car }) => {
           maxWidth: "100%",
         }}
       >
-        {car?.imageNames?.map((image) => (
-          <SwiperSlide key={image}>
+        {car?.imageNames?.map((image, index) => (
+          <SwiperSlide key={index}>
             <Image
-              src={`${BACKEND_URL}/uploads/cars/${image}`}
+              src={`${BACKEND_URL}uploads/cars/${image}`}
               alt={`${image} logo`}
               width={300}
               height={300}
@@ -66,10 +66,10 @@ const CarSwiper = ({ car }: { car: Car }) => {
           maxHeight: 200,
         }}
       >
-        {car?.imageNames?.map((image) => (
-          <SwiperSlide key={image}>
+        {car?.imageNames?.map((image, index) => (
+          <SwiperSlide key={index}>
             <Image
-              src={`${BACKEND_URL}/uploads/cars/${image}`}
+              src={`${BACKEND_URL}uploads/cars/${image}`}
               alt={`${image} logo`}
               height={200}
               width={200}

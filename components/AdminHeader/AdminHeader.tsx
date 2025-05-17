@@ -11,7 +11,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import DirectionsCarIcon from "@mui/icons-material/DirectionsCar";
 import CarRentalIcon from "@mui/icons-material/CarRental";
-import CarRepairIcon from '@mui/icons-material/CarRepair';
+import CarRepairIcon from "@mui/icons-material/CarRepair";
 
 import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
@@ -87,8 +87,7 @@ const AdminHeader = () => {
                 open={Boolean(anchorEl)}
                 onClose={handleClose}
               >
-                <MenuItem onClick={handleClose}>Profile</MenuItem>
-                <MenuItem onClick={() => signOut()}>Logout</MenuItem>
+                <MenuItem onClick={() => signOut()}>Вийти</MenuItem>
               </Menu>
             </div>
           </Toolbar>

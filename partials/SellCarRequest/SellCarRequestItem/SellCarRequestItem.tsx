@@ -58,7 +58,7 @@ const SellCarRequestItem = ({
               <Grid container spacing={2} alignItems="center">
                 <Grid item xs={12} sm={4} md={3}>
                   <Image
-                    src={`${BACKEND_URL}/uploads/sell_car_requests/${sellCarRequest?.imageNames[0]}`}
+                    src={`${BACKEND_URL}uploads/sell_car_requests/${sellCarRequest?.imageNames[0]}`}
                     alt={""}
                     width={0}
                     height={0}
