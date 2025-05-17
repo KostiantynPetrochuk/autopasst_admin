@@ -91,8 +91,8 @@ const AddBrand = ({ open, setOpen }: any) => {
         setLoading(false);
         return;
       }
-      data.brand.models = [];
-      setBrands([...brands, data.brand]);
+      data.models = [];
+      setBrands([...brands, data]);
       setBrandName("");
       setSelectedImage(null);
       if (fileInput) {
